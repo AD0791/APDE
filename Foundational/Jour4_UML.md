@@ -5,6 +5,19 @@
 
 ---
 
+## Definitions
+
+UML (Unified Modeling Language) est un langage de modélisation graphique standardisé pour :
+
+1. Visualiser les systèmes logiciels
+
+2. Spécifier leurs structures et comportements
+
+3. Construire des modèles cohérents
+
+4. Documenter les décisions de conception
+
+
 ## 🎯 Pourquoi UML est crucial
 
 Les examens bancaires testent systématiquement la capacité à **modéliser des systèmes**. Concentrez-vous sur **3 diagrammes** qui couvrent 90% des questions:
