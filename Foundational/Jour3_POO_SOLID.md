@@ -34,6 +34,399 @@ Maîtriser les **concepts fondamentaux de la POO** et les **5 principes SOLID** 
 
 ---
 
+## 🌐 Overview: Paradigmes de Programmation & Architectures
+
+### Qu'est-ce qu'un Paradigme de Programmation?
+
+Un **paradigme de programmation** est une approche fondamentale pour structurer et organiser le code. C'est la "philosophie" ou le style de pensée qu'on adopte pour résoudre des problèmes informatiques.
+
+### Paradigmes Principaux
+
+#### 1. **Programmation Procédurale (Procedural)**
+**Définition:** Organisation du code en procédures/fonctions qui manipulent des données. Le programme est une séquence d'instructions exécutées de haut en bas.
+
+**Langages:** C, Pascal, Fortran
+
+**Caractéristiques:**
+- Code organisé en fonctions
+- Données séparées des fonctions
+- Exécution séquentielle
+- Variables globales et locales
+
+**Exemple bancaire:**
+```c
+// Style procédural - Langage C
+double solde_global = 0;
+
+void deposer(double montant) {
+    solde_global += montant;
+}
+
+void retirer(double montant) {
+    if (solde_global >= montant) {
+        solde_global -= montant;
+    }
+}
+
+int main() {
+    deposer(1000);
+    retirer(500);
+    printf("Solde: %.2f\n", solde_global);
+}
+```
+
+**🏦 Utilité Bancaire:**
+- Scripts de traitement batch (traitement de fins de journée)
+- Calculs simples d'intérêts
+- Rapports financiers séquentiels
+- **Limite:** Difficile à maintenir pour systèmes complexes avec multiples types de comptes
+
+---
+
+#### 2. **Programmation Orientée Objet (OOP)**
+**Définition:** Organisation du code autour d'objets qui encapsulent données (attributs) et comportements (méthodes). Utilise l'héritage, le polymorphisme et l'encapsulation.
+
+**Langages:** Java, C++, Python, C#, PHP
+
+**Caractéristiques:**
+- Classes et objets
+- Encapsulation, héritage, polymorphisme, abstraction
+- Réutilisabilité du code
+- Modélisation du monde réel
+
+**Exemple bancaire:**
+```java
+// Style OOP - Java
+public class CompteBancaire {
+    private double solde;
+    private String numero;
+    
+    public void deposer(double montant) {
+        this.solde += montant;
+    }
+    
+    public boolean retirer(double montant) {
+        if (this.solde >= montant) {
+            this.solde -= montant;
+            return true;
+        }
+        return false;
+    }
+}
+
+public class CompteEpargne extends CompteBancaire {
+    private double tauxInteret;
+    
+    public void appliquerInterets() {
+        double interets = getSolde() * tauxInteret;
+        deposer(interets);
+    }
+}
+```
+
+**🏦 Utilité Bancaire:**
+- Modélisation de différents types de comptes (épargne, courant, crédit)
+- Gestion des clients et leurs relations
+- Système de transactions complexes
+- **Avantage:** Extensibilité - ajouter un nouveau type de compte sans casser l'existant
+
+---
+
+#### 3. **Programmation Fonctionnelle (Functional)**
+**Définition:** Traite le calcul comme l'évaluation de fonctions mathématiques. Évite les états mutables et les effets de bord.
+
+**Langages:** Haskell, Scala, Erlang, JavaScript (partiellement)
+
+**Caractéristiques:**
+- Fonctions pures (mêmes entrées = mêmes sorties)
+- Immuabilité des données
+- Pas d'effets de bord
+- Fonctions de première classe (passées en paramètre)
+
+**Exemple bancaire:**
+```javascript
+// Style fonctionnel - JavaScript
+const calculerInterets = (capital, taux) => capital * taux;
+
+const appliquerFrais = (montant, frais) => montant - frais;
+
+const traiterTransaction = (solde, operations) => 
+    operations.reduce((acc, op) => op(acc), solde);
+
+// Utilisation
+const soldeInitial = 1000;
+const operations = [
+    s => s + 500,           // dépôt
+    s => s - 200,           // retrait
+    s => calculerInterets(s, 0.03)  // intérêts
+];
+
+const soldeFinale = traiterTransaction(soldeInitial, operations);
+// Solde original inchangé (immuabilité)
+```
+
+**🏦 Utilité Bancaire:**
+- Calculs d'intérêts complexes (composés, variables)
+- Traitement parallèle de transactions (pas de conflits d'états)
+- Pipelines de validation de données
+- Audit trails (historique immuable des transactions)
+- **Avantage:** Prédictibilité et testabilité - pas de surprises avec les états
+
+---
+
+#### 4. **Programmation Événementielle (Event-Driven)**
+**Définition:** Le flux du programme est déterminé par des événements (actions utilisateur, messages systèmes). Le code réagit aux événements plutôt que de suivre une séquence.
+
+**Langages:** JavaScript (Node.js), Python (asyncio), C# (événements)
+
+**Caractéristiques:**
+- Écoute d'événements
+- Callbacks et handlers
+- Asynchrone
+- Non-bloquant
+
+**Exemple bancaire:**
+```python
+# Style événementiel - Python
+class EventManager:
+    def __init__(self):
+        self.listeners = {}
+    
+    def subscribe(self, event_type, handler):
+        if event_type not in self.listeners:
+            self.listeners[event_type] = []
+        self.listeners[event_type].append(handler)
+    
+    def publish(self, event_type, data):
+        if event_type in self.listeners:
+            for handler in self.listeners[event_type]:
+                handler(data)
+
+# Gestionnaire d'événements
+events = EventManager()
+
+# Écouteurs
+def envoyer_email(data):
+    print(f"📧 Email: Transaction de {data['montant']} HTG")
+
+def enregistrer_log(data):
+    print(f"📝 Log: {data['type']} - {data['montant']} HTG")
+
+def verifier_fraude(data):
+    if data['montant'] > 10000:
+        print("⚠️  Alerte fraude: Transaction suspecte!")
+
+# Souscription aux événements
+events.subscribe('transaction', envoyer_email)
+events.subscribe('transaction', enregistrer_log)
+events.subscribe('transaction', verifier_fraude)
+
+# Déclenchement
+events.publish('transaction', {'type': 'retrait', 'montant': 15000})
+```
+
+**🏦 Utilité Bancaire:**
+- Notifications en temps réel (SMS, email lors de transactions)
+- Détection de fraude en temps réel
+- Traitement asynchrone de paiements
+- Systèmes de trading haute fréquence
+- **Avantage:** Réactivité - réponse immédiate aux actions clients
+
+---
+
+### Architectures Logicielles
+
+Les **architectures** définissent comment organiser les composants d'un système à grande échelle.
+
+#### 1. **Architecture Monolithique**
+**Définition:** Toute l'application est un seul bloc déployable. Tous les modules sont interconnectés et partagent la même base de code.
+
+**Structure:**
+```
+Application Bancaire
+├── Module Client
+├── Module Compte
+├── Module Transaction
+├── Module Prêt
+└── Base de données unique
+```
+
+**🏦 Utilité Bancaire:**
+- Petites banques locales avec fonctionnalités limitées
+- Applications internes simples
+- **Avantage:** Simplicité de développement et déploiement
+- **Inconvénient:** Difficile à scaler, un bug peut tout planter
+
+---
+
+#### 2. **Architecture en Couches (Layered/N-Tier)**
+**Définition:** Séparation de l'application en couches logiques distinctes (présentation, logique métier, données).
+
+**Structure:**
+```
+┌─────────────────────────────┐
+│   Couche Présentation       │ ← Interface utilisateur (Web, Mobile)
+├─────────────────────────────┤
+│   Couche Métier (Business)  │ ← Logique bancaire, règles
+├─────────────────────────────┤
+│   Couche Accès Données      │ ← Repositories, ORM
+├─────────────────────────────┤
+│   Couche Base de Données    │ ← MySQL, PostgreSQL
+└─────────────────────────────┘
+```
+
+**Exemple bancaire:**
+```java
+// Couche Présentation (Controller)
+@RestController
+public class CompteController {
+    @Autowired
+    private CompteService service;
+    
+    @GetMapping("/compte/{id}")
+    public Compte getCompte(@PathVariable int id) {
+        return service.trouverCompte(id);
+    }
+}
+
+// Couche Métier (Service)
+@Service
+public class CompteService {
+    @Autowired
+    private CompteRepository repo;
+    
+    public Compte trouverCompte(int id) {
+        // Logique métier
+        return repo.findById(id);
+    }
+}
+
+// Couche Données (Repository)
+@Repository
+public interface CompteRepository extends JpaRepository<Compte, Integer> {
+    // Accès données
+}
+```
+
+**🏦 Utilité Bancaire:**
+- **STANDARD dans le secteur bancaire**
+- Séparation des responsabilités claire
+- Facilite les tests (tester chaque couche indépendamment)
+- **Exemple:** Applications web bancaires, core banking systems
+
+---
+
+#### 3. **Architecture Microservices**
+**Définition:** Application décomposée en services indépendants, chacun avec sa propre base de données et déployable séparément.
+
+**Structure:**
+```
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+│   Service    │  │   Service    │  │   Service    │
+│    Client    │  │    Compte    │  │  Transaction │
+│   (BD 1)     │  │   (BD 2)     │  │   (BD 3)     │
+└──────────────┘  └──────────────┘  └──────────────┘
+        ↓                 ↓                 ↓
+            API Gateway / Service Mesh
+```
+
+**🏦 Utilité Bancaire:**
+- Grandes banques internationales (scaling massif)
+- Services indépendants: gestion comptes, prêts, cartes, placements
+- Chaque service peut être développé par une équipe différente
+- **Exemple:** Revolut, N26 (banques digitales)
+- **Avantage:** Scalabilité, résilience (un service down n'affecte pas tout)
+- **Inconvénient:** Complexité opérationnelle
+
+---
+
+#### 4. **Architecture Event-Driven (Événementielle)**
+**Définition:** Communication entre composants via événements. Les services produisent et consomment des événements de manière asynchrone.
+
+**Structure:**
+```
+Service Compte → [Événement: Dépôt effectué] → Message Broker (Kafka/RabbitMQ)
+                                                        ↓
+                        ┌───────────────────────────────┼──────────────┐
+                        ↓                               ↓              ↓
+            Service Notification          Service Fraude    Service Analytics
+```
+
+**🏦 Utilité Bancaire:**
+- Détection de fraude en temps réel
+- Notifications instantanées
+- Audit et compliance (event sourcing - historique complet)
+- **Exemple:** Lors d'un retrait ATM:
+  1. Événement "retrait_effectue" publié
+  2. Service notification → envoie SMS
+  3. Service fraude → analyse le pattern
+  4. Service analytics → met à jour statistiques
+
+---
+
+#### 5. **Architecture SOA (Service-Oriented Architecture)**
+**Définition:** Services réutilisables communiquant via des protocoles standards (SOAP, REST).
+
+**🏦 Utilité Bancaire:**
+- Intégration avec systèmes legacy (anciens mainframes)
+- Interopérabilité entre banques (virements interbancaires)
+- **Exemple:** Service de vérification de crédit partagé entre plusieurs banques
+
+---
+
+### 🏦 Tableau Récapitulatif: Paradigmes/Architectures en Banque
+
+| Paradigme/Architecture | Cas d'usage bancaire principal | Avantage clé |
+|------------------------|--------------------------------|--------------|
+| **Procédural** | Scripts batch, calculs simples | Simplicité |
+| **OOP** | Core banking, gestion comptes | Maintenabilité |
+| **Fonctionnel** | Calculs financiers complexes | Prédictibilité |
+| **Événementiel** | Notifications temps réel | Réactivité |
+| **Monolithique** | Petites banques locales | Simplicité déploiement |
+| **En Couches** | Applications web standard | Séparation responsabilités |
+| **Microservices** | Banques digitales/scaling | Scalabilité |
+| **Event-Driven** | Détection fraude, audit | Traçabilité |
+
+### 💡 En Pratique dans le Secteur Bancaire
+
+**Système bancaire moderne typique combine plusieurs approches:**
+
+```
+┌─────────────────────────────────────────────────┐
+│         Frontend (Web/Mobile)                   │
+│         Paradigme: Événementiel (React)         │
+└─────────────────────────────────────────────────┘
+                      ↓ REST API
+┌─────────────────────────────────────────────────┐
+│         Backend (Microservices)                 │
+│         Paradigme: OOP (Java/Spring)            │
+│         Architecture: Microservices + Layers    │
+│                                                 │
+│  ┌─────────┐  ┌─────────┐  ┌──────────┐        │
+│  │ Comptes │  │  Prêts  │  │ Paiements│        │
+│  └─────────┘  └─────────┘  └──────────┘        │
+└─────────────────────────────────────────────────┘
+                      ↓
+┌─────────────────────────────────────────────────┐
+│         Message Broker (Kafka)                  │
+│         Architecture: Event-Driven              │
+└─────────────────────────────────────────────────┘
+                      ↓
+┌─────────────────────────────────────────────────┐
+│  Services Analytics, Fraude, Notifications      │
+│  Paradigme: Fonctionnel + Événementiel          │
+└─────────────────────────────────────────────────┘
+```
+
+**Pourquoi cette combinaison?**
+- **OOP:** Modélisation claire des entités bancaires (Client, Compte, Transaction)
+- **Microservices:** Scalabilité pour millions d'utilisateurs
+- **Event-Driven:** Réactivité temps réel pour fraude et notifications
+- **Fonctionnel:** Calculs financiers fiables et testables
+- **Layered:** Dans chaque microservice pour séparer présentation/métier/données
+
+---
+
 ## 🏛️ Les 4 piliers de la POO
 
 | Pilier | Définition | Mécanisme Java | Exemple |
