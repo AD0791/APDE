@@ -5,6 +5,29 @@
 
 ---
 
+## 📖 Définitions essentielles
+
+>**Définition POO (Programmation Orientée Objet)**: La POO est un paradigme de programmation qui organise le code autour d'**objets** (instances de classes) contenant à la fois des données (attributs) et des comportements (méthodes). C'est comme créer des modèles réutilisables qui représentent des entités du monde réel.
+
+**En résumé**, la POO c'est :
+- ✅ Organiser le code en objets réutilisables
+- ✅ Encapsuler les données et comportements ensemble
+- ✅ Favoriser la réutilisabilité et la maintenabilité
+- ✅ Modéliser des concepts du monde réel
+
+>**Définition SOLID**: SOLID est un acronyme de 5 principes de conception orientée objet qui rendent le code plus **maintenable**, **flexible** et **évolutif**. Ces principes aident à créer des systèmes robustes qui peuvent évoluer sans nécessiter de refonte majeure.
+
+**En résumé**, SOLID c'est :
+- ✅ **S**ingle Responsibility - Une classe, une responsabilité
+- ✅ **O**pen/Closed - Ouvert à l'extension, fermé à la modification
+- ✅ **L**iskov Substitution - Les sous-classes doivent être substituables
+- ✅ **I**nterface Segregation - Interfaces petites et ciblées
+- ✅ **D**ependency Inversion - Dépendre d'abstractions, pas de concrétions
+
+Dans le secteur bancaire, ces principes sont critiques car ils permettent d'évoluer le système (nouveaux types de comptes, nouvelles fonctionnalités) sans tout casser !
+
+---
+
 ## 🎯 Objectif du jour
 
 Maîtriser les **concepts fondamentaux de la POO** et les **5 principes SOLID** qui reviennent dans TOUS les examens de développeur. Ces principes sont essentiels pour démontrer une compréhension mature de la conception logicielle.

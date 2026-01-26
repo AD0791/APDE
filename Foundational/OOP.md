@@ -5,6 +5,36 @@
 
 ---
 
+## 📖 Définition essentielle
+
+>**Définition OOP/POO (Object-Oriented Programming)**: La programmation orientée objet est un **paradigme de programmation** qui structure le code autour d'objets contenant à la fois des **données** (attributs/propriétés) et des **comportements** (méthodes/fonctions). C'est comme créer des plans (classes) pour fabriquer des objets réutilisables.
+
+**En résumé, la POO c'est :**
+- ✅ Créer des classes (modèles) et des objets (instances)
+- ✅ Organiser le code de façon modulaire et réutilisable
+- ✅ Modéliser le monde réel (ex: Client, Compte, Transaction)
+- ✅ Faciliter la maintenance et l'évolution du code
+
+**Pourquoi la POO ?**
+- **Réutilisabilité** : Une classe Compte peut être utilisée partout
+- **Maintenabilité** : Modification isolée sans casser le reste
+- **Modularité** : Code organisé en composants indépendants
+- **Abstraction** : Cacher la complexité, montrer l'essentiel
+
+**Exemple bancaire :**
+```
+Classe : CompteBancaire
+├── Attributs : numeroCompte, solde, titulaire
+└── Méthodes : deposer(), retirer(), consulterSolde()
+
+Objet : compte1 (instance de CompteBancaire)
+├── numeroCompte = "001"
+├── solde = 5000
+└── titulaire = "Alice Dupont"
+```
+
+---
+
 ## 1) Les 4 piliers (comprendre, pas réciter)
 
 ### Encapsulation

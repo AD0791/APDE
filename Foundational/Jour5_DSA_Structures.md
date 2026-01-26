@@ -5,6 +5,28 @@
 
 ---
 
+## 📖 Définition essentielle
+
+>**Définition DSA (Data Structures & Algorithms)**: Les structures de données sont des **façons d'organiser et de stocker les données** en mémoire pour permettre un accès et une modification efficaces. C'est comme choisir le bon type de rangement (tiroir, étagère, classeur) pour différents types d'objets.
+
+**En résumé**, les structures de données c'est :
+- ✅ Organiser les données de façon optimale
+- ✅ Choisir la bonne structure pour le bon usage
+- ✅ Comprendre les compromis (temps vs espace)
+- ✅ Optimiser les performances (accès, recherche, insertion, suppression)
+
+**Pourquoi c'est important ?**
+- Un bon choix de structure = application rapide et efficace
+- Un mauvais choix = lenteur, gaspillage de mémoire, bugs
+
+**Exemples bancaires :**
+- **Stack** pour l'historique d'annulation de transactions
+- **Queue** pour la file d'attente de traitement de virements
+- **Hash Table** pour rechercher rapidement un compte par son numéro
+- **BST** pour maintenir les transactions triées par date
+
+---
+
 ## 🎯 Objectif du jour
 
 Maîtriser les **structures de données essentielles** et leurs **complexités temporelles**. Ces structures apparaissent fréquemment dans les examens techniques car elles testent la compréhension algorithmique fondamentale.

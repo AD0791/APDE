@@ -9,6 +9,22 @@
 
 Le secteur bancaire vit et respire les **transactions** et l'**intégrité des données**. Les propriétés **ACID** apparaissent dans PRESQUE TOUS les examens bancaires. Votre expérience PostgreSQL/MySQL est un atout, mais l'écriture manuscrite de requêtes SQL sans IDE demande de la pratique.
 
+
+
+>**Définition simple**: Une base de données (BDD) est un système organisé pour stocker, gérer et récupérer des données de manière structurée et efficace. C'est comme un classeur numérique ultra-puissant avec des règles strictes d'organisation.
+
+
+**En résumé**:
+
+Une base de données est un coffre-fort numérique intelligent qui :
+
+- ✅ Stocke les données de façon organisée
+- ✅ Empêche les erreurs et corruptions
+- ✅ Permet à plusieurs personnes d'y accéder en même temps
+- ✅ Garantit que les opérations critiques se déroulent correctement (ACID)
+
+Dans le secteur bancaire, c'est absolument vital car on ne peut pas se permettre de perdre des données de transactions ou d'avoir des soldes incorrects !
+
 ---
 
 ## 📚 Concepts essentiels (Pareto 20/80)
@@ -72,6 +88,23 @@ RIGHT JOIN → A-1, B-2, NULL-3 (tous les comptes)
 
 ### 3. Normalisation simplifiée
 
+> **Définition**: La normalisation est le processus d'organisation des données pour éliminer la redondance et garantir l'intégrité des données. C'est comme ranger un placard en désordre pour éviter les doublons et faciliter la recherche. ❌ Sans normalisation : données dupliquées, incohérences, gaspillage d'espace. ✅ Avec normalisation : données propres, pas de répétition, mises à jour faciles.
+
+1. 1NF (Première Forme Normale)
+
+> Règle : Chaque cellule contient UNE SEULE valeur (atomique) + avoir une clé primaire
+
+2. 2NF (Deuxième Forme Normale)
+
+> Règle : 1NF + tous les attributs dépendent de la CLÉ ENTIÈRE (pas juste d'une partie)
+
+3. 3NF (Troisième Forme Normale)
+
+> Règle : 2NF + aucune dépendance transitive (attribut non-clé → attribut non-clé)
+
+
+
+
 | Forme | Règle d'or | Problème résolu | Exemple violation |
 |-------|-----------|-----------------|-------------------|
 | **1NF** | Valeurs atomiques uniquement + clé primaire | Groupes répétitifs | Colonne "téléphones" = "555-1234, 555-5678" |
@@ -96,6 +129,41 @@ Produit(produit_id, nom, prix)
 ---
 
 ### 4. Index et performance
+
+> **Définition**: Un index est une structure de données qui accélère la recherche dans une table, comme l'index d'un livre qui te permet de trouver rapidement un sujet sans lire toutes les pages.
+
+1. B-Tree (Balanced Tree) - INDEX PAR DÉFAUT
+Définition : Structure d'arbre équilibré qui maintient les données triées.
+
+2. Hash Index
+Définition : Utilise une fonction de hachage pour accès direct ultra-rapide.
+
+3. Unique Index
+Définition : Index qui garantit l'unicité des valeurs (pas de doublons).
+
+4. Composite Index (Index Composé)
+Définition : Index sur plusieurs colonnes à la fois.
+
+5. Clustered Index (Index Clustérisé)
+Définition : Réorganise physiquement les lignes de la table selon l'ordre de l'index.
+
+Caractéristiques :
+1 seul par table (car les données ne peuvent être ordonnées que d'une façon)
+Automatiquement créé sur la PRIMARY KEY
+Très rapide pour lectures séquentielles
+
+7. Full-Text Index
+Définition : Index optimisé pour recherche textuelle dans de longs textes.
+
+8. Spatial Index
+Définition : Index pour données géographiques (coordonnées GPS, polygones).
+
+9. Covering Index (Index Couvrant)
+Définition : Index contenant toutes les colonnes nécessaires à la requête (pas besoin de lire la table).
+
+10. Partial Index (Index Partiel)
+Définition : Index sur un sous-ensemble filtré de la table.
+
 
 | Type d'index | Structure | Meilleur usage | Exemple |
 |--------------|-----------|----------------|---------|

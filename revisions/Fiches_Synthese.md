@@ -4,6 +4,43 @@
 
 ---
 
+## 📖 DÉFINITIONS EXPRESS (À CONNAÎTRE PAR CŒUR)
+
+### 🗄️ Base de données
+Un système organisé pour stocker, gérer et récupérer des données de manière structurée, fiable et efficace. Garantit l'intégrité via ACID.
+
+### 💾 POO (Programmation Orientée Objet)
+Paradigme qui organise le code en objets (instances de classes) contenant données (attributs) et comportements (méthodes). 4 piliers : Encapsulation, Abstraction, Héritage, Polymorphisme.
+
+### 🏗️ SOLID
+5 principes de conception OOP pour un code maintenable et évolutif : Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion.
+
+### 📦 DSA (Data Structures & Algorithms)
+Structures de données = façons d'organiser les données (Array, Stack, Queue, Hash Table, Tree). Algorithmes = séquences d'instructions pour résoudre un problème (recherche, tri, parcours).
+
+### 📐 UML (Unified Modeling Language)
+Langage de modélisation graphique standardisé pour visualiser, spécifier et documenter les systèmes logiciels via des diagrammes (classes, cas d'utilisation, séquence).
+
+### 🌐 Backend
+Partie serveur d'une application gérant la logique métier, les données et les API. Invisible pour l'utilisateur mais essentiel pour le traitement.
+
+### 🔌 Networking
+Ensemble des protocoles et technologies permettant la communication entre systèmes (TCP/IP, HTTP, OSI). Transport des données sur les réseaux.
+
+### 💻 Frontend
+Partie client d'une application avec laquelle l'utilisateur interagit directement : HTML (structure), CSS (style), JavaScript (comportement).
+
+### 🔐 ACID
+Propriétés garantissant la fiabilité des transactions en base de données : Atomicity (tout ou rien), Consistency (états valides), Isolation (indépendance), Durability (persistance).
+
+### 🛡️ XSS (Cross-Site Scripting)
+Attaque par injection de scripts malveillants. Prévention : utiliser textContent, échapper entrées, CSP, HttpOnly cookies.
+
+### 🔒 CSRF (Cross-Site Request Forgery)
+Attaque trompant un utilisateur authentifié pour exécuter une action. Prévention : token CSRF, SameSite cookies, vérifier Origin.
+
+---
+
 ## 🗄️ FICHE 1: ACID (Bases de données)
 
 | Propriété | Définition courte | Exemple |

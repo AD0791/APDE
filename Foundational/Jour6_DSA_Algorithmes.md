@@ -5,6 +5,34 @@
 
 ---
 
+## 📖 Définition essentielle
+
+>**Définition Algorithmes**: Un algorithme est une **séquence d'instructions précises et finies** qui résout un problème ou accomplit une tâche. C'est comme une recette de cuisine : des étapes claires qui, si suivies correctement, produisent toujours le même résultat.
+
+**En résumé**, les algorithmes c'est :
+- ✅ Des instructions claires et non ambiguës
+- ✅ Une solution à un problème spécifique
+- ✅ Un processus qui se termine (pas de boucle infinie)
+- ✅ Une efficacité mesurable (complexité temporelle et spatiale)
+
+**Pourquoi c'est important ?**
+- **Recherche efficace** : Trouver un compte parmi des millions en quelques millisecondes
+- **Tri optimal** : Ordonner les transactions par date rapidement
+- **Parcours intelligent** : Explorer un réseau de relations entre comptes
+
+**Exemples bancaires :**
+- **Binary Search** pour trouver un client dans une liste triée
+- **Quick Sort** pour trier les transactions par montant
+- **BFS/DFS** pour détecter des fraudes (parcours de réseau de transactions)
+
+**Notation Big O** : Mesure la performance d'un algorithme
+- O(1) = Très rapide (accès direct)
+- O(log n) = Rapide (binary search)
+- O(n) = Linéaire (parcourir une liste)
+- O(n²) = Lent (boucles imbriquées)
+
+---
+
 ## 🎯 Objectif du jour
 
 Maîtriser les **algorithmes fondamentaux** de recherche, tri et parcours de graphes avec leurs **complexités**. Ces algorithmes sont testés régulièrement car ils révèlent la capacité d'analyse algorithmique.

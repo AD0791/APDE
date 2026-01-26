@@ -5,6 +5,39 @@
 
 ---
 
+## 📖 Définitions essentielles
+
+>**Définition Backend**: Le backend est la **partie serveur** d'une application web qui gère la logique métier, les données, l'authentification et les communications avec la base de données. C'est le "cerveau" invisible qui traite les requêtes et fournit les réponses.
+
+**En résumé, le Backend c'est :**
+- ✅ Traitement de la logique métier (calculs, validations)
+- ✅ Gestion des données et des bases de données
+- ✅ Authentification et autorisation des utilisateurs
+- ✅ API pour communiquer avec le frontend
+
+>**Définition Networking**: Le networking (réseaux) désigne l'ensemble des **protocoles et technologies** qui permettent la communication entre différents systèmes informatiques. C'est comme le système postal qui permet d'envoyer des messages entre ordinateurs.
+
+**En résumé, le Networking c'est :**
+- ✅ Protocoles de communication (TCP, UDP, HTTP)
+- ✅ Modèles en couches (OSI, TCP/IP)
+- ✅ Adressage et routage des données
+- ✅ Sécurité des communications (HTTPS, SSL/TLS)
+
+>**Définition Frontend**: Le frontend est la **partie client** d'une application web avec laquelle l'utilisateur interagit directement. C'est l'interface visible : boutons, formulaires, animations, tout ce qui s'affiche dans le navigateur.
+
+**En résumé, le Frontend c'est :**
+- ✅ Structure avec HTML (contenu et sémantique)
+- ✅ Style avec CSS (mise en page et design)
+- ✅ Interactivité avec JavaScript (comportement dynamique)
+- ✅ Communication avec le backend via API (AJAX/Fetch)
+
+**Exemple bancaire complet :**
+- **Frontend** : Le formulaire de virement que le client remplit
+- **Networking** : HTTP/HTTPS pour envoyer les données de façon sécurisée
+- **Backend** : Validation du virement, vérification du solde, mise à jour de la base de données
+
+---
+
 ## 🎯 Objectif du jour
 
 Couvrir les **bases du backend, networking et surtout FRONTEND** en détail. Le frontend est souvent testé en examen et ce document contient un contenu très enrichi sur HTML5, CSS3, JavaScript DOM, événements, AJAX, frameworks, et sécurité.
