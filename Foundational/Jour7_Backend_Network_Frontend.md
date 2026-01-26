@@ -1055,6 +1055,30 @@ export default {
 
 ---
 
+## 🔎 Extension: Compréhension & Rétention (Jour 7)
+
+### 1) CORS en 3 lignes
+- Le navigateur bloque les requêtes cross-origin par défaut
+- Le serveur doit autoriser via `Access-Control-Allow-Origin`
+- Les requêtes non simples déclenchent un **preflight OPTIONS**
+
+### 2) Cookies vs LocalStorage
+- **Cookie:** envoyé au serveur à chaque requête
+- **LocalStorage:** stocké côté client, non envoyé
+- **SessionStorage:** perdu à la fermeture de l'onglet
+
+### 3) Caching HTTP (à citer en examen)
+- `Cache-Control: max-age=...`
+- `ETag` + `If-None-Match`
+- `304 Not Modified`
+
+### 4) Performance front (minimum vital)
+- Minifier assets
+- Lazy load images
+- Eviter reflow massif
+
+---
+
 ## ✅ Checklist de révision Jour 7
 
 ### Backend & Networking

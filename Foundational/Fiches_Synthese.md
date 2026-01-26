@@ -295,6 +295,120 @@ COMMIT;  -- ou ROLLBACK
 
 ---
 
+## 🧠 FICHE 17: Normalisation (DB)
+
+| Forme | Idée clé | Objectif |
+|-------|----------|----------|
+| **1NF** | Valeurs atomiques | Pas de listes/colonnes multiples |
+| **2NF** | Pas de dépendance partielle | Dépendre de toute la clé |
+| **3NF** | Pas de dépendance transitive | Éviter redondance indirecte |
+
+**À retenir:** normaliser = intégrité; dénormaliser = performance lecture.
+
+---
+
+## 📌 FICHE 18: Index (Quand/Pourquoi)
+
+| Cas | Utilité |
+|-----|---------|
+| Filtre fréquent (`WHERE`) | ✅ Accélère |
+| Jointure (`JOIN`) | ✅ Accélère |
+| Colonne très mise à jour | ⚠️ Coût en écriture |
+| Faible cardinalité | ⚠️ Index peu utile |
+
+**Rappel:** un index = plus rapide en lecture, plus lent en écriture.
+
+---
+
+## 🔄 FICHE 19: Isolation & Anomalies
+
+| Niveau | Dirty Read | Non-Repeatable | Phantom |
+|--------|------------|----------------|---------|
+| Read Uncommitted | Oui | Oui | Oui |
+| Read Committed | Non | Oui | Oui |
+| Repeatable Read | Non | Non | Oui |
+| Serializable | Non | Non | Non |
+
+**Anomalies:**
+- Dirty Read = lecture non validée
+- Non-Repeatable = même ligne change
+- Phantom = nouvelles lignes apparaissent
+
+---
+
+## 🧩 FICHE 20: Design Patterns (Ultra-Rapide)
+
+| Type | Pattern | Idée |
+|------|---------|------|
+| Création | Factory | Centraliser création |
+| Création | Builder | Construire pas à pas |
+| Structure | Adapter | Rendre compatible |
+| Structure | Decorator | Ajouter sans modifier |
+| Comportement | Strategy | Algorithmes interchangeables |
+| Comportement | Observer | Notifier abonnés |
+
+---
+
+## 🏛️ FICHE 21: Architectures
+
+| Style | Avantages | Limites |
+|-------|-----------|---------|
+| Monolithe | Simple, rapide à déployer | Scalabilité limitée |
+| Microservices | Scalabilité, indépendance | Complexité ops |
+| Event-driven | Découplage, résilience | Debug plus dur |
+
+---
+
+## 🧯 FICHE 22: Cache (Essentiels)
+
+| Stratégie | Idée | Risque |
+|----------|------|--------|
+| Cache-aside | App lit cache puis DB | Cache miss |
+| Write-through | Écrit cache + DB | Latence |
+| Write-back | Écrit cache puis DB | Perte en crash |
+
+**Règle d'or:** invalidation est le vrai problème.
+
+---
+
+## 🔐 FICHE 23: AuthN vs AuthZ
+
+| Concept | Définition | Exemple |
+|---------|------------|---------|
+| **AuthN** | Vérifier identité | Login/mot de passe |
+| **AuthZ** | Vérifier permission | Role ADMIN |
+
+**JWT:** token signé, stateless.  
+**Session:** état côté serveur.
+
+---
+
+## ✅ FICHE 24: Tests (Pyramide)
+
+| Type | Portée | Outils |
+|------|--------|--------|
+| Unit | Petite | JUnit, pytest |
+| Integration | Modules | Spring Test |
+| E2E | Système complet | Cypress, Playwright |
+
+**But:** rapide en bas, confiance en haut.
+
+---
+
+## 🧰 FICHE 25: Git Essentiels
+
+| Commande | Usage |
+|----------|-------|
+| `git status` | état des fichiers |
+| `git add .` | stage |
+| `git commit -m "msg"` | commit |
+| `git log --oneline` | historique |
+| `git diff` | différences |
+
+**Rappel:** commit petit = review facile.
+
+---
+
 ## ✅ Checklist minute avant l'examen
 
 - [ ] ACID = Atomicity, Consistency, Isolation, Durability

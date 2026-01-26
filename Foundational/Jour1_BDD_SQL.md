@@ -407,4 +407,53 @@ WHERE solde > (SELECT AVG(solde) FROM comptes);
 
 **💡 Conseil:** Pratiquez l'écriture manuscrite! Écrivez au moins 5 requêtes SQL sur papier aujourd'hui et chronométrez-vous. L'examen est MANUSCRIT, pas sur ordinateur.
 
-**Prochain document:** `Jour2_Java_OOP.md` - Transition Python → Java
+---
+
+## 🔎 Extension: Compréhension & Rétention (Jour 1)
+
+### 1) Erreurs fréquentes (et comment les éviter)
+- Oublier le `WHERE` → impact massif (UPDATE/DELETE)
+- Confondre `WHERE` et `HAVING`
+- Mauvais `JOIN` (clé incorrecte)
+- `COUNT(col)` vs `COUNT(*)` (NULL ignorés)
+
+### 2) Exercices rapides (avec solutions)
+
+**Exercice A:** clients sans compte  
+```sql
+SELECT c.client_id, c.nom
+FROM clients c
+LEFT JOIN comptes co ON co.client_id = c.client_id
+WHERE co.compte_id IS NULL;
+```
+
+**Exercice B:** total des retraits par compte  
+```sql
+SELECT compte_id, SUM(montant) AS total_retraits
+FROM transactions
+WHERE type_tx = 'RETRAIT'
+GROUP BY compte_id;
+```
+
+**Exercice C:** top 3 comptes par solde  
+```sql
+SELECT compte_id, solde
+FROM comptes
+ORDER BY solde DESC
+LIMIT 3;
+```
+
+### 3) Questions type examen
+- Définir ACID en 1 phrase chacun
+- Différence `INNER JOIN` vs `LEFT JOIN`
+- Expliquer pourquoi un index accélère la lecture mais ralentit l'écriture
+
+### 4) Checklist mémoire
+- [ ] ACID compris + exemple bancaire
+- [ ] JOINs dessinés mentalement
+- [ ] GROUP BY + HAVING maîtrisés
+- [ ] Index = lecture + / écriture -
+
+---
+
+**Prochain document:** `OOP.md` - Guide complet POO (Java + Python)

@@ -198,7 +198,7 @@ Selon les résultats de la simulation, **réviser prioritairement** les sujets o
 4. Mémoriser: agrégation (◇) vs composition (◆)
 
 **Si faible en Java:**
-1. Relire `Jour2_Java_OOP.md` et `Jour3_POO_SOLID.md`
+1. Relire `OOP.md` et `Jour3_POO_SOLID.md`
 2. Réécrire une classe complète avec héritage
 3. Implémenter un pattern (Singleton, Factory)
 4. Réviser overloading vs overriding
@@ -348,6 +348,29 @@ public class Compte {
 - Boire de l'eau
 - Étirer les mains/poignets
 - Se rappeler: "Je me suis bien préparé"
+
+---
+
+## 🔎 Extension: Rétention & Auto-évaluation
+
+### 1) Barème personnel (auto-note /20)
+- SQL (5) : requêtes correctes + syntaxe propre
+- POO/SOLID (5) : définitions + exemple
+- UML (4) : diagrammes lisibles + multiplicités
+- Réseaux/Web (3) : OSI + HTTP + sécurité
+- DSA (3) : structure + complexité
+
+### 2) Révision express 30 minutes
+- 10 min: Fiches de synthèse (ACID, SOLID, OSI)
+- 10 min: 3 requêtes SQL manuscrites
+- 10 min: 1 diagramme UML + 1 classe Java
+
+### 3) Questions flash (réponse en 1 phrase)
+- Différence classe abstraite vs interface
+- Pourquoi `LEFT JOIN` et pas `INNER JOIN`
+- Que signifie O(n log n)
+- CORS: pourquoi et comment l'autoriser
+- CSRF: prévention principale
 
 ---
 

@@ -14,7 +14,7 @@
 | Jour | Date | Document | Thème principal | Temps | Priorité |
 |------|------|----------|-----------------|-------|----------|
 | **1** | 21 jan | `Jour1_BDD_SQL.md` | Bases de données & SQL | 6-8h | 🔴 Critique |
-| **2** | 22 jan | `Jour2_Java_OOP.md` | Java OOP (transition Python) | 6-8h | 🔴 Critique |
+| **2** | 22 jan | `OOP.md` | OOP complet (Java + Python) | 6-8h | 🔴 Critique |
 | **3** | 23 jan | `Jour3_POO_SOLID.md` | POO avancée & SOLID | 5-6h | 🔴 Critique |
 | **4** | 24 jan | `Jour4_UML.md` | UML (3 diagrammes essentiels) | 5-6h | 🟡 Haute |
 | **5** | 25 jan | `Jour5_DSA_Structures.md` | DSA - Structures de données | 6-7h | 🟡 Haute |
@@ -38,10 +38,10 @@ Ce plan suit le principe **20/80**: maîtriser les **20% de concepts essentiels*
 - ✅ Transactions SQL
 - ✅ Normalisation (1NF à 3NF)
 
-**Java OOP:**
-- ✅ Syntaxe de base et différences avec Python
-- ✅ Héritage et interfaces
-- ✅ Collections (ArrayList, HashMap)
+**OOP (Java + Python):**
+- ✅ Concepts fondamentaux (encapsulation, héritage, etc.)
+- ✅ Syntaxe de base et différences Java/Python
+- ✅ Interfaces/abstraction et collections clés
 
 **POO & Design:**
 - ✅ Principes SOLID

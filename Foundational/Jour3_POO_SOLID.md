@@ -922,6 +922,98 @@ public class Main {
 
 ---
 
+## ✅ SOLID — Solutions Java et Python (exemples courts)
+
+### 1) SRP — Une classe = une responsabilité
+
+**Java**
+```java
+class RapportService { void genererRapport() {} }
+class RapportPrinter { void imprimer(String contenu) {} }
+```
+
+**Python**
+```python
+class RapportService:
+    def generer_rapport(self): pass
+
+class RapportPrinter:
+    def imprimer(self, contenu): pass
+```
+
+### 2) OCP — Ouvert à l'extension, fermé à la modification
+
+**Java**
+```java
+interface FeePolicy { double fee(double amount); }
+class StandardFee implements FeePolicy { public double fee(double a){ return a*0.01; } }
+```
+
+**Python**
+```python
+class FeePolicy:
+    def fee(self, amount): raise NotImplementedError
+
+class StandardFee(FeePolicy):
+    def fee(self, amount): return amount * 0.01
+```
+
+### 3) LSP — Sous-types substituables
+
+**Java**
+```java
+class Compte { boolean retirer(double m){ return m >= 0; } }
+class CompteCourant extends Compte { @Override boolean retirer(double m){ return m >= 0; } }
+```
+
+**Python**
+```python
+class Compte:
+    def retirer(self, m): return m >= 0
+
+class CompteCourant(Compte):
+    def retirer(self, m): return m >= 0
+```
+
+### 4) ISP — Interfaces petites et ciblées
+
+**Java**
+```java
+interface ExportPdf { void exportPdf(); }
+interface ExportCsv { void exportCsv(); }
+```
+
+**Python**
+```python
+class ExportPdf:
+    def export_pdf(self): pass
+class ExportCsv:
+    def export_csv(self): pass
+```
+
+### 5) DIP — Dépendre d'abstractions
+
+**Java**
+```java
+interface Repository { void save(String data); }
+class Service {
+    private final Repository repo;
+    Service(Repository repo){ this.repo = repo; }
+}
+```
+
+**Python**
+```python
+class Repository:
+    def save(self, data): raise NotImplementedError
+
+class Service:
+    def __init__(self, repo: Repository):
+        self.repo = repo
+```
+
+---
+
 ## 📝 Exercices pratiques Jour 3
 
 ### Exercice 1: SOLID

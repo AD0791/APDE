@@ -438,6 +438,26 @@ Retrait au guichet automatique:
 
 ---
 
+## 🔎 Extension: Compréhension & Rétention (Jour 4)
+
+### 1) Erreurs classiques
+- Triangle d'héritage orienté vers l'enfant (❌) → doit pointer vers le parent (✅)
+- Confondre agrégation (◇) et composition (◆)
+- Oublier les multiplicités aux extrémités
+- Mettre les acteurs dans la frontière système (❌)
+
+### 2) Cas bancaire express (à dessiner)
+- **Ouverture de compte** (use case + séquence)
+- **Virement interne** (séquence avec contrôle solde)
+- **Blocage de carte** (use case avec include/extend)
+
+### 3) Questions type examen
+- Différence association vs dépendance
+- Quand utiliser un diagramme d'activité plutôt qu'une séquence?
+- Donner un exemple de composition dans un domaine bancaire
+
+---
+
 ## ✅ Checklist de révision Jour 4
 
 - [ ] Connaître les symboles de visibilité (+, -, #, ~)

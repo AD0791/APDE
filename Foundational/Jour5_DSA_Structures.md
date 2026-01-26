@@ -523,6 +523,44 @@ public void postorder(TreeNode node) {
 
 ---
 
+## 🔎 Extension: Compréhension & Rétention (Jour 5)
+
+### 1) Mini-récap (quand utiliser quoi)
+- **Stack:** historique/undo
+- **Queue:** file d'attente, BFS
+- **HashMap:** accès rapide clé → valeur
+- **BST:** données triées + recherche log
+
+### 2) Exemples Python rapides
+
+**Stack**
+```python
+stack = []
+stack.append(5)
+stack.pop()
+```
+
+**Queue**
+```python
+from collections import deque
+q = deque()
+q.append(5)
+q.popleft()
+```
+
+**HashMap**
+```python
+freq = {}
+freq["a"] = freq.get("a", 0) + 1
+```
+
+### 3) Questions type examen
+- Pourquoi une HashMap peut tomber à O(n) dans le pire cas?
+- Différence Array vs LinkedList
+- Quand préférer un BST à un tableau trié?
+
+---
+
 ## ✅ Checklist de révision Jour 5
 
 - [ ] Implémenter Stack avec push/pop/peek
