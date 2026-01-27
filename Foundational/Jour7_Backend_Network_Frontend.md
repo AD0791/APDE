@@ -46,6 +46,15 @@ Couvrir les **bases du backend, networking et surtout FRONTEND** en détail. Le 
 
 ## 🌐 PARTIE 1: BACKEND - REST API
 
+>**Définition formelle REST**: REST (Representational State Transfer) est un **style architectural** pour les systèmes distribués, introduit par Roy Fielding en 2000. C'est un ensemble de contraintes architecturales qui permet de créer des services web scalables, sans état (stateless), et utilisant les standards HTTP.
+
+**Caractéristiques clés de REST:**
+- 🔹 Architecture client-serveur
+- 🔹 Communication sans état (stateless)
+- 🔹 Utilisation des méthodes HTTP standard (GET, POST, PUT, DELETE, PATCH)
+- 🔹 Ressources identifiées par des URI
+- 🔹 Représentations multiples (JSON, XML, etc.)
+
 ### Principes REST (Representational State Transfer)
 
 | Principe | Description | Exemple |
@@ -58,6 +67,10 @@ Couvrir les **bases du backend, networking et surtout FRONTEND** en détail. Le 
 
 ### Méthodes HTTP et codes de statut
 
+>**Définition formelle - Méthode HTTP**: Une méthode HTTP est un **verbe** qui indique l'action à effectuer sur une ressource identifiée par une URI. Chaque méthode a une sémantique précise définie par le protocole HTTP (RFC 7231).
+
+>**Définition formelle - Idempotence**: Une opération est dite **idempotente** si son exécution multiple avec les mêmes paramètres produit le même résultat qu'une seule exécution. En HTTP, cela signifie que plusieurs requêtes identiques ont le même effet sur l'état du serveur qu'une seule requête.
+
 | Méthode | Action | Exemple | Idempotent? |
 |---------|--------|---------|-------------|
 | **GET** | Lire | GET /comptes/123 | Oui |
@@ -67,6 +80,8 @@ Couvrir les **bases du backend, networking et surtout FRONTEND** en détail. Le 
 | **DELETE** | Supprimer | DELETE /comptes/123 | Oui |
 
 ### Codes de statut HTTP à MÉMORISER
+
+>**Définition formelle - Code de statut HTTP**: Un code de statut HTTP est un **nombre à 3 chiffres** retourné par le serveur pour indiquer le résultat du traitement d'une requête HTTP. Les codes sont groupés en 5 catégories selon leur premier chiffre: 1xx (Information), 2xx (Succès), 3xx (Redirection), 4xx (Erreur client), 5xx (Erreur serveur).
 
 | Code | Catégorie | Signification | Quand utiliser |
 |------|-----------|---------------|----------------|
@@ -98,7 +113,11 @@ POST   /api/v1/virements          → Effectuer un virement
 
 ## 🔌 PARTIE 2: NETWORKING
 
+>**Définition formelle - Networking**: Le networking (ou réseautique) est l'ensemble des **technologies, protocoles et architectures** qui permettent l'interconnexion et la communication entre systèmes informatiques distants. Il définit comment les données sont transmises, routées et reçues à travers différents réseaux.
+
 ### Modèle OSI - 7 couches
+
+>**Définition formelle - Modèle OSI**: Le modèle OSI (Open Systems Interconnection) est un **modèle de référence conceptuel** créé par l'ISO en 1984, qui divise les communications réseau en **7 couches abstraites**. Chaque couche a des fonctions spécifiques et communique uniquement avec les couches adjacentes, permettant une modularité et une interopérabilité entre systèmes hétérogènes.
 
 | Couche | Nom | Fonction | Protocoles | Équipement |
 |--------|-----|----------|------------|------------|
@@ -114,6 +133,10 @@ POST   /api/v1/virements          → Effectuer un virement
 
 ### TCP vs UDP
 
+>**Définition formelle - TCP**: TCP (Transmission Control Protocol) est un protocole de **transport orienté connexion** de la couche 4 (Transport) du modèle OSI. Il garantit la livraison fiable et ordonnée des données en établissant une connexion bidirectionnelle avant l'envoi, vérifiant l'intégrité des paquets et gérant les retransmissions en cas de perte.
+
+>**Définition formelle - UDP**: UDP (User Datagram Protocol) est un protocole de **transport sans connexion** de la couche 4 (Transport) du modèle OSI. Il offre un service de transmission simple et rapide sans garantie de livraison, d'ordre ou d'intégrité des données. UDP privilégie la vitesse et la faible latence au détriment de la fiabilité.
+
 | Caractéristique | TCP | UDP |
 |-----------------|-----|-----|
 | **Connexion** | Orienté connexion (3-way handshake) | Sans connexion |
@@ -125,6 +148,8 @@ POST   /api/v1/virements          → Effectuer un virement
 | **Overhead** | Plus élevé | Minimal |
 
 ### TCP 3-Way Handshake
+
+>**Définition formelle - 3-Way Handshake**: Le 3-Way Handshake (poignée de main à trois voies) est le **processus d'établissement de connexion TCP** en trois étapes qui synchronise les numéros de séquence entre client et serveur avant toute transmission de données: (1) SYN - le client demande la connexion, (2) SYN-ACK - le serveur accepte et synchronise, (3) ACK - le client confirme l'établissement.
 
 ```
 Client                Server
@@ -140,6 +165,10 @@ Client                Server
 
 ### HTTP vs HTTPS
 
+>**Définition formelle - HTTP**: HTTP (HyperText Transfer Protocol) est un protocole de **communication de la couche Application** (couche 7 OSI) qui définit les règles d'échange de documents hypermédia entre clients et serveurs web. Il fonctionne en mode requête-réponse sur le port 80 et transmet les données en clair (non chiffrées).
+
+>**Définition formelle - HTTPS**: HTTPS (HTTP Secure) est la version **sécurisée de HTTP** qui ajoute une couche de chiffrement SSL/TLS entre les couches Application et Transport. Il utilise le port 443 et garantit la confidentialité, l'intégrité des données et l'authentification du serveur via des certificats numériques.
+
 | HTTP | HTTPS |
 |------|-------|
 | Port 80 | Port 443 |
@@ -149,6 +178,8 @@ Client                Server
 | Plus rapide | Légèrement plus lent (chiffrement) |
 
 ### Ports courants à mémoriser
+
+>**Définition formelle - Port**: Un port réseau est un **numéro logique 16-bits** (0-65535) qui identifie un processus ou service spécifique sur un hôte. Les ports permettent à un système d'établir plusieurs connexions simultanées en distinguant les différents services (web, email, FTP, etc.). Les ports sont divisés en trois catégories: Well-Known Ports (0-1023), Registered Ports (1024-49151), et Dynamic/Private Ports (49152-65535).
 
 | Port | Service | Protocole |
 |------|---------|-----------|
@@ -168,7 +199,11 @@ Client                Server
 
 ## 💻 PARTIE 3: FRONTEND (ENRICHI)
 
+>**Définition formelle - Frontend**: Le frontend (ou interface client) est la **couche de présentation** d'une application web qui s'exécute dans le navigateur de l'utilisateur. Il comprend l'ensemble des technologies (HTML, CSS, JavaScript) responsables de l'affichage, de l'interactivité et de l'expérience utilisateur (UX/UI).
+
 ### 📄 A. HTML5 - Structure et Sémantique
+
+>**Définition formelle - HTML5**: HTML5 (HyperText Markup Language version 5) est le **langage de balisage standard** pour structurer et présenter le contenu sur le Web, publié par le W3C en 2014. Il introduit de nouvelles balises sémantiques, des APIs JavaScript natives (Canvas, Geolocation, Web Storage), le support multimédia natif (audio/video), et des fonctionnalités de validation de formulaires intégrées.
 
 #### Structure HTML5 de base
 
@@ -214,6 +249,8 @@ Client                Server
 
 #### Balises sémantiques HTML5
 
+>**Définition formelle - Balise sémantique**: Une balise sémantique HTML5 est un **élément HTML dont le nom décrit explicitement sa fonction et son contenu**, facilitant la compréhension de la structure du document par les navigateurs, moteurs de recherche (SEO) et technologies d'assistance (accessibilité). Contrairement aux balises génériques (`<div>`, `<span>`), les balises sémantiques donnent un sens au contenu.
+
 | Balise | Usage | Exemple |
 |--------|-------|---------|
 | `<header>` | En-tête de page/section | Logo, navigation |
@@ -228,6 +265,8 @@ Client                Server
 | `<time>` | Date/heure | `<time datetime="2026-01-21">` |
 
 #### Formulaires HTML5 avec validation
+
+>**Définition formelle - Formulaire HTML**: Un formulaire HTML est un **élément interactif** (`<form>`) qui collecte des données saisies par l'utilisateur et les soumet à un serveur pour traitement. HTML5 ajoute des types d'input spécialisés (email, number, date) et des attributs de validation natifs (required, pattern, min, max) qui permettent une validation côté client sans JavaScript.
 
 ```html
 <form id="formulaire-virement" action="/api/virements" method="POST">
@@ -326,7 +365,11 @@ Client                Server
 
 ### 🎨 B. CSS3 - Mise en page et Design
 
+>**Définition formelle - CSS3**: CSS3 (Cascading Style Sheets Level 3) est le **langage de feuilles de style** utilisé pour décrire la présentation visuelle (couleurs, typographie, mise en page, animations) des documents HTML. CSS3 est modulaire et introduit des fonctionnalités avancées comme Flexbox, Grid, transitions, animations, media queries, et des sélecteurs complexes.
+
 #### Box Model - Concept FONDAMENTAL
+
+>**Définition formelle - Box Model**: Le Box Model CSS est le **modèle de boîte rectangulaire** qui définit comment chaque élément HTML est rendu à l'écran. Chaque élément est composé de 4 zones concentriques: le **content** (contenu), le **padding** (marge intérieure), la **border** (bordure), et la **margin** (marge extérieure). La dimension totale d'un élément est la somme de ces 4 zones.
 
 ```
 ┌─────────────── margin ────────────────┐
@@ -377,6 +420,8 @@ Largeur totale = margin + border + padding + width + padding + border + margin
 
 #### Sélecteurs CSS essentiels
 
+>**Définition formelle - Sélecteur CSS**: Un sélecteur CSS est un **motif (pattern)** qui permet de cibler et sélectionner un ou plusieurs éléments HTML pour leur appliquer des règles de style. Les sélecteurs varient en spécificité et peuvent cibler des éléments par nom de balise, classe, ID, attribut, état (pseudo-classes), ou position dans l'arbre DOM.
+
 ```css
 /* Sélecteur d'élément */
 p { color: blue; }
@@ -413,6 +458,8 @@ p::first-letter { font-size: 2em; }
 
 #### Flexbox - Layout moderne
 
+>**Définition formelle - Flexbox**: Flexbox (Flexible Box Layout Module) est un **modèle de mise en page CSS unidimensionnel** qui facilite la distribution d'espace et l'alignement d'éléments dans un conteneur, même quand leurs dimensions sont dynamiques. Flexbox fonctionne selon un axe principal (main axis) et un axe secondaire (cross axis), permettant un contrôle flexible de la direction, l'ordre, l'alignement et la taille des éléments enfants.
+
 ```css
 /* Container flex */
 .container-comptes {
@@ -433,6 +480,8 @@ p::first-letter { font-size: 2em; }
 ```
 
 #### Grid Layout - Grilles avancées
+
+>**Définition formelle - Grid Layout**: CSS Grid Layout est un **système de mise en page bidimensionnel** qui permet de créer des mises en page complexes en divisant l'espace en lignes et colonnes. Contrairement à Flexbox (unidimensionnel), Grid contrôle simultanément la disposition verticale et horizontale, permettant de positionner précisément les éléments dans des zones de grille définies.
 
 ```css
 .dashboard {
@@ -463,6 +512,10 @@ p::first-letter { font-size: 2em; }
 ```
 
 #### Responsive Design avec Media Queries
+
+>**Définition formelle - Responsive Design**: Le Responsive Web Design est une **approche de conception web** qui vise à créer des sites qui s'adaptent automatiquement à différentes tailles d'écran et dispositifs (mobile, tablette, desktop) en utilisant des mises en page fluides, des images flexibles et des media queries CSS.
+
+>**Définition formelle - Media Query**: Une media query CSS est une **règle conditionnelle** qui applique des styles uniquement si certaines conditions sont remplies (largeur d'écran, orientation, résolution). Elle permet de créer des designs adaptatifs en définissant différents styles pour différents contextes d'affichage.
 
 ```css
 /* Mobile First */
@@ -504,6 +557,10 @@ p::first-letter { font-size: 2em; }
 ```
 
 #### Animations et Transitions CSS
+
+>**Définition formelle - Transition CSS**: Une transition CSS est un **effet d'interpolation** qui permet de modifier progressivement les valeurs de propriétés CSS sur une durée définie, créant des changements visuels fluides entre deux états (ex: hover). Elle nécessite un événement déclencheur (changement d'état).
+
+>**Définition formelle - Animation CSS**: Une animation CSS est une **séquence de changements de style** définie via `@keyframes` qui peut s'exécuter automatiquement au chargement ou en boucle, sans nécessiter d'événement déclencheur. Elle offre un contrôle plus granulaire que les transitions avec des étapes intermédiaires personnalisables.
 
 ```css
 /* Transition simple */
@@ -558,6 +615,10 @@ p::first-letter { font-size: 2em; }
 ---
 
 ### ⚡ C. JavaScript - DOM et Événements
+
+>**Définition formelle - JavaScript**: JavaScript est un **langage de programmation de haut niveau, interprété, dynamiquement typé** qui s'exécute dans le navigateur (côté client) ou sur serveur (Node.js). Dans le contexte frontend, JavaScript permet d'ajouter de l'interactivité, manipuler le DOM, gérer les événements, faire des requêtes asynchrones, et créer des expériences utilisateur dynamiques.
+
+>**Définition formelle - DOM**: Le DOM (Document Object Model) est une **représentation en arborescence (tree) orientée objet** d'un document HTML/XML, générée par le navigateur. Chaque élément HTML devient un objet JavaScript manipulable, permettant de lire, modifier, ajouter ou supprimer dynamiquement des éléments et leurs attributs via JavaScript.
 
 #### Sélection d'éléments
 
@@ -619,6 +680,8 @@ parent.removeChild(element);  // Ancienne méthode
 ```
 
 #### Événements
+
+>**Définition formelle - Événement**: Un événement JavaScript est une **action ou occurrence détectable** dans le navigateur (click, submit, keypress, load, etc.) qui peut déclencher l'exécution de code via des gestionnaires d'événements (event handlers). Les événements suivent un modèle de propagation en trois phases: capture (du parent vers l'enfant), target (élément cible), et bubbling (de l'enfant vers le parent).
 
 ```javascript
 // Événement click
@@ -729,7 +792,11 @@ document.addEventListener('DOMContentLoaded', afficherComptes);
 
 ### 🌐 D. AJAX et Fetch API
 
+>**Définition formelle - AJAX**: AJAX (Asynchronous JavaScript And XML) est une **technique de développement web** qui permet d'échanger des données avec un serveur et de mettre à jour partiellement une page web de façon asynchrone, sans rechargement complet. Bien que le nom contienne XML, le format JSON est aujourd'hui plus couramment utilisé.
+
 #### XMLHttpRequest (ancienne méthode)
+
+>**Définition formelle - XMLHttpRequest**: XMLHttpRequest (XHR) est une **API JavaScript native** (ancienne génération) qui permet d'effectuer des requêtes HTTP asynchrones vers un serveur. Elle fonctionne via un système de callbacks et d'états (readyState), mais sa syntaxe est verbeuse et complexe comparée à l'API Fetch moderne.
 
 ```javascript
 function chargerComptes() {
@@ -753,6 +820,8 @@ function chargerComptes() {
 ```
 
 #### Fetch API (moderne) - GET
+
+>**Définition formelle - Fetch API**: L'API Fetch est une **interface JavaScript moderne** (ES6+) basée sur les Promises qui permet d'effectuer des requêtes HTTP de façon plus simple et élégante que XMLHttpRequest. Elle retourne des Promises qui résolvent en objets Response, facilitant la gestion asynchrone avec async/await et offrant une syntaxe plus claire et composable.
 
 ```javascript
 // Requête GET simple
@@ -864,7 +933,11 @@ async function supprimerCompte(id) {
 
 ### 🛡️ E. Sécurité Frontend
 
+>**Définition formelle - Sécurité Frontend**: La sécurité frontend désigne l'ensemble des **pratiques, techniques et mécanismes** visant à protéger l'application web côté client contre les vulnérabilités et attaques (XSS, CSRF, injection, vol de données). Elle inclut la validation des entrées, l'échappement de contenu, la gestion sécurisée des tokens, et l'utilisation de headers de sécurité (CSP, CORS).
+
 #### XSS (Cross-Site Scripting)
+
+>**Définition formelle - XSS**: XSS (Cross-Site Scripting) est une **vulnérabilité de sécurité web** qui permet à un attaquant d'injecter du code JavaScript malveillant dans une page web vue par d'autres utilisateurs. L'attaque exploite l'absence de validation/échappement des données utilisateur, permettant l'exécution de scripts non autorisés qui peuvent voler des cookies, rediriger vers des sites malveillants, ou modifier le contenu de la page.
 
 **Attaque:** Injection de script malveillant dans une page web.
 
@@ -895,6 +968,8 @@ element.innerHTML = contenuPropre;
 - ✅ HttpOnly cookies (pour tokens)
 
 #### CSRF (Cross-Site Request Forgery)
+
+>**Définition formelle - CSRF**: CSRF (Cross-Site Request Forgery) est une **attaque de sécurité web** qui force un utilisateur authentifié à exécuter des actions non désirées sur une application web en laquelle il est connecté. L'attaquant exploite la confiance que l'application a en l'utilisateur en lui faisant soumettre des requêtes malveillantes (via image, lien, formulaire caché) qui utilisent ses credentials de session.
 
 **Attaque:** Utilisateur authentifié trompé pour exécuter une action.
 
@@ -931,6 +1006,10 @@ async function effectuerAction(data) {
 ```
 
 #### Stockage sécurisé
+
+>**Définition formelle - Web Storage**: Le Web Storage (localStorage et sessionStorage) est une **API JavaScript** qui permet de stocker des données clé-valeur (strings) côté client de façon persistante (localStorage) ou temporaire (sessionStorage). Contrairement aux cookies, ces données ne sont pas automatiquement envoyées au serveur, mais sont vulnérables aux attaques XSS car accessibles via JavaScript.
+
+>**Définition formelle - Cookie HttpOnly**: Un cookie HttpOnly est un **cookie avec le flag HttpOnly activé** qui le rend inaccessible au JavaScript côté client (document.cookie), protégeant ainsi les tokens sensibles contre le vol via XSS. Ces cookies sont uniquement transmis au serveur dans les requêtes HTTP et doivent être combinés avec les flags Secure (HTTPS uniquement) et SameSite (protection CSRF).
 
 ```javascript
 // ❌ DANGEREUX - localStorage vulnérable à XSS
@@ -978,7 +1057,11 @@ function validerVirement(data) {
 
 ### 📚 F. Frameworks Frontend (concepts de base)
 
+>**Définition formelle - Framework Frontend**: Un framework frontend est une **bibliothèque ou infrastructure logicielle** qui fournit une structure, des outils et des patterns pour construire des interfaces utilisateur web modernes et interactives. Les frameworks modernes (React, Angular, Vue) utilisent des concepts comme les composants réutilisables, le binding de données, le Virtual DOM, et la programmation déclarative.
+
 #### React - Composants
+
+>**Définition formelle - React**: React est une **bibliothèque JavaScript déclarative** développée par Facebook pour construire des interfaces utilisateur basées sur des composants réutilisables. React utilise un Virtual DOM pour optimiser les mises à jour, JSX pour combiner HTML et JavaScript, et un flux de données unidirectionnel (one-way data flow) pour gérer l'état de l'application.
 
 ```javascript
 // Composant fonctionnel
@@ -1014,6 +1097,8 @@ function App() {
 
 #### Angular - Composants
 
+>**Définition formelle - Angular**: Angular est un **framework web complet** développé par Google pour construire des applications web dynamiques et Single Page Applications (SPA). Basé sur TypeScript, Angular utilise une architecture MVC/MVVM, l'injection de dépendances, le two-way data binding, et fournit un écosystème complet (routing, HTTP client, formulaires, testing) intégré dès le départ.
+
 ```typescript
 // compte.component.ts
 import { Component, Input } from '@angular/core';
@@ -1038,6 +1123,8 @@ export class CompteCarteComponent {
 ```
 
 #### Vue.js - Composants
+
+>**Définition formelle - Vue.js**: Vue.js est un **framework JavaScript progressif** pour construire des interfaces utilisateur interactives. Vue combine la simplicité de React (composants, Virtual DOM) avec des fonctionnalités d'Angular (directives, two-way binding optionnel) dans une syntaxe accessible. Il peut être adopté progressivement (d'une simple bibliothèque à un framework complet avec Vue Router et Vuex).
 
 ```javascript
 // CompteCard.vue
@@ -1091,6 +1178,8 @@ export default {
 ## 🔎 Extension: Compréhension & Rétention (Jour 7)
 
 ### 1) CORS en 3 lignes
+
+>**Définition formelle - CORS**: CORS (Cross-Origin Resource Sharing) est un **mécanisme de sécurité HTTP** qui utilise des headers pour permettre à un navigateur d'autoriser une application web tournant sur une origine (domaine) à accéder aux ressources d'un serveur sur une origine différente. Par défaut, les navigateurs bloquent les requêtes cross-origin (Same-Origin Policy) sauf si le serveur autorise explicitement via des headers comme `Access-Control-Allow-Origin`.
 - Le navigateur bloque les requêtes cross-origin par défaut
 - Le serveur doit autoriser via `Access-Control-Allow-Origin`
 - Les requêtes non simples déclenchent un **preflight OPTIONS**
@@ -1101,6 +1190,9 @@ export default {
 - **SessionStorage:** perdu à la fermeture de l'onglet
 
 ### 3) Caching HTTP (à citer en examen)
+
+>**Définition formelle - Caching HTTP**: Le caching HTTP est un **mécanisme d'optimisation des performances** qui permet de stocker temporairement des copies de ressources (images, CSS, JS) au niveau du navigateur ou de serveurs intermédiaires (CDN, proxy). Le serveur contrôle le cache via des headers HTTP (`Cache-Control`, `ETag`, `Expires`) permettant de réduire la bande passante et améliorer les temps de chargement.
+
 - `Cache-Control: max-age=...`
 - `ETag` + `If-None-Match`
 - `304 Not Modified`
