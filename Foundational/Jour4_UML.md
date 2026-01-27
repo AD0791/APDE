@@ -17,6 +17,53 @@ UML (Unified Modeling Language) est un langage de modélisation graphique standa
 
 4. Documenter les décisions de conception
 
+---
+
+## 📊 Les 14 types de diagrammes UML
+
+UML 2.5 définit **14 types de diagrammes** répartis en **2 catégories principales**:
+
+### 🏗️ A. Diagrammes structurels (7 types)
+*Représentent la structure statique du système*
+
+| Diagramme | Définition | Quand l'utiliser |
+|-----------|-----------|------------------|
+| **1. Diagramme de classes** | Montre les classes, leurs attributs, méthodes et relations (héritage, association, composition) | - Conception orientée objet<br>- Architecture du système<br>- **Modélisation de la base de données**<br>- Documentation technique<br>**🎯 Essentiel pour examens** |
+| **2. Diagramme d'objets** | Représente des instances spécifiques de classes à un moment donné (snapshot) | - Illustrer des exemples concrets<br>- Valider le diagramme de classes<br>- Déboguer des relations complexes<br>- Documentation de cas d'utilisation |
+| **3. Diagramme de composants** | Montre l'organisation et les dépendances entre composants logiciels (fichiers, bibliothèques, modules) | - Architecture logicielle<br>- Déploiement de microservices<br>- Gestion des dépendances<br>- Systèmes modulaires |
+| **4. Diagramme de déploiement** | Représente l'architecture physique: serveurs, machines, réseaux et où les composants sont déployés | - Infrastructure système<br>- Déploiement cloud/on-premise<br>- Architecture distribuée<br>- Planification DevOps |
+| **5. Diagramme de paquetages** | Organise les classes en paquetages (packages/namespaces) et montre leurs dépendances | - Structurer gros projets<br>- Organisation modulaire<br>- Gestion de la complexité<br>- Architecture en couches |
+| **6. Diagramme de structure composite** | Montre la structure interne d'une classe et comment ses parties collaborent | - Systèmes embarqués<br>- Architecture détaillée de composants<br>- Patterns structurels complexes<br>(Rarement utilisé) |
+| **7. Diagramme de profil** | Étend UML avec des stéréotypes et contraintes personnalisés | - Créer des DSL (Domain Specific Language)<br>- Spécialisations métier<br>- Contraintes spécifiques<br>(Usage avancé) |
+
+### 🎬 B. Diagrammes comportementaux (7 types)
+*Représentent le comportement dynamique du système*
+
+| Diagramme | Définition | Quand l'utiliser |
+|-----------|-----------|------------------|
+| **8. Diagramme de cas d'utilisation** | Montre les fonctionnalités (cas d'usage) et les acteurs qui interagissent avec le système | - **Capture des exigences fonctionnelles**<br>- Communication avec clients<br>- Définir le périmètre<br>- Tests d'acceptation<br>**🎯 Essentiel pour examens** |
+| **9. Diagramme de séquence** | Illustre les interactions entre objets dans un ordre chronologique (messages échangés) | - **Flux détaillés d'opérations**<br>- APIs et protocoles<br>- Scénarios d'utilisation<br>- Débogage de comportements<br>**🎯 Essentiel pour examens** |
+| **10. Diagramme d'activité** | Modélise un workflow ou processus métier (comme un flowchart amélioré) | - Processus métier (BPM)<br>- Algorithmes complexes<br>- Workflows avec parallélisme<br>- Logique de traitement |
+| **11. Diagramme d'états-transitions** | Représente les différents états d'un objet et les transitions entre ces états | - Machines à états<br>- Cycle de vie d'objets<br>- Protocoles réseau<br>- Systèmes réactifs |
+| **12. Diagramme de communication** | Montre les interactions entre objets en mettant l'accent sur les liens structurels (alternative au diagramme de séquence) | - Relations entre objets<br>- Alternative au diagramme de séquence<br>- Vue structurelle des interactions<br>(Moins utilisé que séquence) |
+| **13. Diagramme de vue d'ensemble d'interaction** | Combine diagramme d'activité et fragments de diagrammes d'interaction | - Orchestration de scénarios complexes<br>- Vue d'ensemble de plusieurs séquences<br>(Usage avancé) |
+| **14. Diagramme de temps (timing)** | Montre le comportement d'objets au cours du temps avec contraintes temporelles précises | - Systèmes temps réel<br>- Contraintes de performance<br>- Protocoles avec timing strict<br>- Systèmes embarqués critiques |
+
+---
+
+## 🎯 Les 3 diagrammes prioritaires pour les examens
+
+Sur les 14 diagrammes UML, **3 diagrammes couvrent 90% des questions d'examen**:
+
+| Priorité | Diagramme | Fréquence | Pourquoi |
+|----------|-----------|-----------|----------|
+| **🔴 CRITIQUE** | **Diagramme de classes** | 95% | Structure du système, base de données, POO |
+| **🟠 HAUTE** | **Diagramme de cas d'utilisation** | 80% | Exigences fonctionnelles, périmètre |
+| **🟡 MOYENNE** | **Diagramme de séquence** | 70% | Interactions dynamiques, flux d'opérations |
+
+**Les autres diagrammes** (activité, états, déploiement, etc.) apparaissent rarement (<10%) mais il est bon de connaître leur existence.
+
+---
 
 ## 🎯 Pourquoi UML est crucial
 
