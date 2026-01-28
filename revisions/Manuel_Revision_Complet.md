@@ -948,6 +948,63 @@ def dfs(graph, node, visited):
 | **404** | Not Found | Ressource inexistante |
 | **500** | Internal Error | Erreur serveur |
 
+
+### 🏗️ Architectures Backend
+
+**Mnémonique**: "**M**arie **L**it **H**abituellement"
+
+#### MVC — Basique
+```
+Controller → Routes HTTP
+Model      → Logique + DB
+View       → JSON
+```
+
+#### Layered — Moyen
+```
+Controller → Service → Repository → DB
+```
+
+#### Hexagonal — Senior
+```
+Domain (Core) ↔ Ports ↔ Adapters
+```
+
+### 🔐 Authentification
+
+| Type | Description | Niveau |
+|------|-------------|--------|
+| Sessions | État serveur | Basique |
+| JWT | Token stateless | Moyen |
+| OAuth2 | Délégation | Senior |
+
+### ⚡ Caching & Performance
+
+- **Redis**: Cache avec TTL
+- **Pagination**: Limiter résultats
+- **Rate Limiting**: Contrôler requêtes
+- **Connection Pooling**: Réutiliser connexions
+
+### 🛡️ Sécurité Backend
+
+1. Hash passwords (bcrypt)
+2. Validate inputs (Pydantic)
+3. Rate limiting
+4. CORS configuration
+
+### 🎯 Patterns Avancés (Senior)
+
+- **CQRS**: Write/Read séparés
+- **Event Sourcing**: Stocker events au lieu d'état
+- **Circuit Breaker**: Protection contre pannes
+- **Saga**: Transactions distribuées avec compensation
+
+### 📈 Observability
+
+- **Logs**: Debugging (ELK)
+- **Metrics**: Performance (Prometheus)
+- **Traces**: Flow distribué (Jaeger)
+
 ### 🔌 Modèle OSI - 7 Couches
 
 **Mnémonique**: "**P**lease **D**o **N**ot **T**hrow **S**ausage **P**izza **A**way"

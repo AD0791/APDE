@@ -8,7 +8,7 @@
 
 **Public cible :** Développeurs se préparant à des entretiens techniques ou examens nécessitant une révision rapide mais complète.
 
-**Structure :** 5 sections principales, chacune avec théorie condensée + exemples pratiques + pièges courants.
+**Structure :** 6 sections principales, chacune avec théorie condensée + exemples pratiques + pièges courants.
 
 ---
 
@@ -19,7 +19,8 @@
 3. [Entity-Relationship Diagrams (ERD)](#3-entity-relationship-diagrams-erd) (25 min)
 4. [SQL Fondamental et Avancé](#4-sql-fondamental-et-avancé) (35 min)
 5. [UML & Conception Orientée Objet](#5-uml--conception-orientée-objet) (30 min)
-6. [Checklist Finale](#6-checklist-finale) (10 min)
+6. [Backend Development Essentiels](#6-backend-development-essentiels) (30 min)
+7. [Checklist Finale](#7-checklist-finale) (10 min)
 
 ---
 
@@ -1198,7 +1199,592 @@ appliquer_frais_mensuels(comptes)
 
 ---
 
-## 6. Checklist Finale
+## 6. Backend Development Essentiels
+
+### 🎯 Architecture Backend
+
+#### **MVC (Model-View-Controller)** — Basique
+
+```
+Controller → Routes HTTP, validation
+Model      → Logique métier + DB
+View       → Réponses JSON
+```
+
+**Quand l'utiliser:** Petites applications, prototypes
+
+---
+
+#### **Architecture en Couches** — Moyen
+
+```
+Controller  → Routes HTTP
+Service     → Logique métier
+Repository  → Accès données
+Model       → Entités
+```
+
+**Avantages:**
+- Séparation des responsabilités
+- Testabilité accrue
+- Code réutilisable
+
+---
+
+#### **Architecture Hexagonale** — Senior
+
+```
+Domain Core (Entities, Value Objects, Aggregates)
+    ↕
+Ports (Interfaces)
+    ↕
+Adapters (REST, DB, Message Bus)
+```
+
+**Principes:**
+- Le domain ne dépend de rien
+- Inversion de dépendances
+- Testabilité maximale
+
+---
+
+### 🔐 Authentification & Sécurité
+
+#### **Sessions** — Basique
+
+```python
+# Session stockée côté serveur
+session['user_id'] = user.id
+```
+
+**Avantages:** Simple, révocation facile  
+**Inconvénients:** État côté serveur, scalabilité limitée
+
+---
+
+#### **JWT (JSON Web Tokens)** — Moyen
+
+```python
+# Token signé, stocké côté client
+token = jwt.encode({"sub": user_id}, SECRET_KEY, algorithm="HS256")
+
+# Header Authorization: Bearer <token>
+```
+
+**Structure JWT:**
+```
+Header.Payload.Signature
+```
+
+**Avantages:**
+- Stateless (pas de serveur session)
+- Scalable
+- Standards (OAuth2)
+
+**Pièges:**
+- Tokens volés difficiles à révoquer
+- Taille plus grande que session ID
+
+**Solution:** Refresh tokens + short-lived access tokens
+
+---
+
+#### **OAuth2 & OIDC** — Senior
+
+```
+Client → Authorization Server → Resource Server
+```
+
+**Flows:**
+- **Authorization Code:** Pour applications web
+- **Client Credentials:** Pour service-to-service
+- **PKCE:** Pour mobile apps
+
+---
+
+### 💾 Base de Données
+
+#### **Connexion et Queries** — Basique
+
+```python
+# SQLAlchemy (Python)
+from sqlalchemy import create_engine
+engine = create_engine("postgresql://user:pass@localhost/db")
+
+# Query
+results = session.query(Account).filter(Account.balance > 1000).all()
+```
+
+---
+
+#### **Transactions ACID** — Moyen
+
+```python
+# Transaction avec rollback automatique
+try:
+    account1.balance -= 1000
+    account2.balance += 1000
+    session.commit()
+except:
+    session.rollback()
+    raise
+```
+
+**ACID:**
+- **Atomicity:** Tout ou rien
+- **Consistency:** Règles respectées
+- **Isolation:** Transactions isolées
+- **Durability:** Modifications persistantes
+
+---
+
+#### **Connection Pooling** — Moyen
+
+```python
+# Réutiliser les connexions
+engine = create_engine(
+    "postgresql://...",
+    pool_size=10,
+    max_overflow=20
+)
+```
+
+**Avantages:**
+- Performances accrues
+- Moins de ressources serveur
+
+---
+
+### ⚡ Optimisation
+
+#### **Caching avec Redis** — Moyen
+
+```python
+import redis
+cache = redis.Redis(host='localhost', port=6379)
+
+# Mise en cache
+cache.setex(f"account:{account_id}", 300, json.dumps(account_data))
+
+# Récupération
+cached = cache.get(f"account:{account_id}")
+```
+
+**Stratégies:**
+- **Cache-Aside:** Vérifier cache, sinon DB
+- **Write-Through:** Écrire cache + DB
+- **TTL:** Expiration automatique
+
+---
+
+#### **Pagination** — Moyen
+
+```python
+# Query avec pagination
+def get_transactions(page=1, page_size=20):
+    skip = (page - 1) * page_size
+    return query.offset(skip).limit(page_size).all()
+```
+
+```json
+{
+  "items": [...],
+  "total": 1000,
+  "page": 1,
+  "page_size": 20,
+  "total_pages": 50
+}
+```
+
+---
+
+#### **Rate Limiting** — Moyen
+
+```python
+# Limiter les requêtes
+@limiter.limit("100/minute")
+def api_endpoint():
+    return {"status": "ok"}
+```
+
+**Méthodes:**
+- **Fixed Window:** 100 req/minute
+- **Sliding Window:** Plus précis
+- **Token Bucket:** Burst autorisé
+
+---
+
+### 🏗️ Patterns Avancés
+
+#### **CQRS (Command Query Responsibility Segregation)** — Senior
+
+```
+Commands (Write) → Write Model → PostgreSQL
+Queries (Read)   → Read Model  → Redis/MongoDB
+```
+
+**Avantages:**
+- Optimisation séparée
+- Scaling indépendant
+- Modèles adaptés
+
+---
+
+#### **Event Sourcing** — Senior
+
+```python
+# Au lieu de stocker l'état final, stocker les events
+events = [
+    AccountCreated(account_id="123"),
+    MoneyDeposited(amount=1000),
+    MoneyWithdrawn(amount=500)
+]
+
+# Reconstituer l'état
+def rebuild_state(events):
+    balance = 0
+    for event in events:
+        if isinstance(event, MoneyDeposited):
+            balance += event.amount
+        elif isinstance(event, MoneyWithdrawn):
+            balance -= event.amount
+    return balance
+```
+
+**Avantages:**
+- Audit trail complet
+- Time travel (état à tout moment)
+- Event replay
+
+---
+
+#### **Saga Pattern** — Senior
+
+```python
+# Transaction distribuée avec compensation
+class TransferSaga:
+    def execute(self):
+        try:
+            # Step 1: Débiter compte source
+            debit_result = self.debit_account(from_account, amount)
+            
+            # Step 2: Créditer compte destination
+            credit_result = self.credit_account(to_account, amount)
+            
+        except Exception as e:
+            # Compensation: annuler le débit
+            self.compensate_debit(from_account, amount)
+            raise
+```
+
+**Types:**
+- **Choreography:** Events entre services
+- **Orchestration:** Coordinateur central
+
+---
+
+#### **Circuit Breaker** — Senior
+
+```python
+class CircuitBreaker:
+    # États: CLOSED → OPEN → HALF_OPEN
+    
+    def call(self, func):
+        if self.state == "OPEN":
+            raise Exception("Circuit breaker is OPEN")
+        
+        try:
+            result = func()
+            self.on_success()
+            return result
+        except:
+            self.on_failure()
+            raise
+```
+
+**Avantages:**
+- Éviter les cascades de pannes
+- Récupération automatique
+- Fail fast
+
+---
+
+### 📊 Observability
+
+#### **Logging** — Tous niveaux
+
+```python
+# Structured logging
+logger.info(
+    "transaction_completed",
+    transaction_id="txn-123",
+    account_id="acc-456",
+    amount=1000.0,
+    duration_ms=45
+)
+```
+
+**Niveaux:** DEBUG, INFO, WARNING, ERROR, CRITICAL
+
+---
+
+#### **Metrics (Prometheus)** — Senior
+
+```python
+from prometheus_client import Counter, Histogram
+
+# Compteur
+transactions_total = Counter(
+    'transactions_total',
+    'Total transactions',
+    ['type', 'status']
+)
+
+transactions_total.labels(type='deposit', status='success').inc()
+
+# Histogramme (latence)
+http_duration = Histogram('http_request_duration_seconds')
+
+@http_duration.time()
+def handle_request():
+    pass
+```
+
+---
+
+#### **Distributed Tracing (Jaeger)** — Senior
+
+```python
+with tracer.start_span("transfer_money") as span:
+    span.set_tag("account_id", account_id)
+    span.set_tag("amount", amount)
+    
+    # Appels avec propagation du context
+    result = external_service.call()
+```
+
+**Avantages:**
+- Visualiser le flow entre services
+- Identifier les goulots d'étranglement
+- Debugging distribué
+
+---
+
+### 🧪 Testing Strategy
+
+#### **Niveaux de tests:**
+
+1. **Unit Tests** — Logique métier isolée
+```python
+def test_deposit():
+    account = Account(balance=1000)
+    account.deposit(500)
+    assert account.balance == 1500
+```
+
+2. **Integration Tests** — API + DB
+```python
+def test_create_account_api():
+    response = client.post("/accounts", json={...})
+    assert response.status_code == 201
+    assert db.query(Account).count() == 1
+```
+
+3. **E2E Tests** — Flow complet
+```python
+def test_full_transfer_flow():
+    # Create accounts → Login → Transfer → Verify
+```
+
+4. **Load Tests** — Performance (JMeter, k6)
+```bash
+k6 run --vus 100 --duration 30s load-test.js
+```
+
+---
+
+### 🔑 Points Clés Backend
+
+#### **Architecture Evolution:**
+```
+MVC (Basique)
+    ↓
+Layered (Moyen)
+    ↓
+Hexagonal + DDD (Senior)
+    ↓
+Microservices (Senior)
+```
+
+#### **Sécurité:**
+- ✅ Hash passwords (bcrypt, argon2)
+- ✅ Validate all inputs (Pydantic, Joi)
+- ✅ Use HTTPS
+- ✅ Rate limiting
+- ✅ CORS configuration
+- ✅ SQL injection prevention (ORM, parameterized queries)
+- ✅ Secret management (env vars, Vault)
+
+#### **Performance:**
+- ✅ Caching (Redis)
+- ✅ Connection pooling
+- ✅ Pagination
+- ✅ Async I/O
+- ✅ Database indexes
+- ✅ Query optimization
+
+#### **Scalability:**
+- ✅ Stateless services
+- ✅ Load balancing
+- ✅ Horizontal scaling
+- ✅ Message queues (RabbitMQ, Kafka)
+- ✅ Database replication
+- ✅ Microservices
+
+---
+
+### 📚 Exemples Rapides
+
+#### **FastAPI API Complète (Python)**
+
+```python
+from fastapi import FastAPI, Depends, HTTPException
+from sqlalchemy.orm import Session
+
+app = FastAPI()
+
+@app.post("/accounts", status_code=201)
+def create_account(
+    account: AccountCreate,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    # Validation
+    if account.account_type not in ["COURANT", "EPARGNE"]:
+        raise HTTPException(400, "Invalid account type")
+    
+    # Create
+    db_account = Account(
+        owner_id=current_user.id,
+        account_type=account.account_type,
+        balance=0.0
+    )
+    db.add(db_account)
+    db.commit()
+    
+    return db_account
+```
+
+#### **Express API (Node.js)**
+
+```javascript
+const express = require('express');
+const app = express();
+
+app.post('/accounts', authenticate, async (req, res) => {
+    try {
+        const account = await Account.create({
+            ownerId: req.user.id,
+            accountType: req.body.accountType,
+            balance: 0
+        });
+        
+        res.status(201).json(account);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+```
+
+#### **Spring Boot API (Java)**
+
+```java
+@RestController
+@RequestMapping("/api/accounts")
+public class AccountController {
+    
+    @Autowired
+    private AccountService accountService;
+    
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public AccountDTO createAccount(
+        @Valid @RequestBody CreateAccountRequest request,
+        @AuthenticationPrincipal User user
+    ) {
+        return accountService.createAccount(request, user.getId());
+    }
+}
+```
+
+---
+
+### ⚠️ Pièges Courants Backend
+
+**❌ Endpoints non sécurisés**
+```python
+@app.get("/admin/users")  # Danger!
+def get_all_users():
+    return users
+```
+**✅ Solution:** Authentification + Autorisation
+```python
+@app.get("/admin/users")
+def get_all_users(user = Depends(require_admin)):
+    return users
+```
+
+**❌ Pas de validation**
+```python
+@app.post("/transfer")
+def transfer(amount: float):  # amount peut être négatif!
+    process_transfer(amount)
+```
+**✅ Solution:** Validation stricte
+```python
+class TransferRequest(BaseModel):
+    amount: float = Field(..., gt=0)
+```
+
+**❌ Mots de passe en clair**
+```python
+user.password = request.password  # Danger!
+```
+**✅ Solution:** Hash
+```python
+user.password = bcrypt.hash(request.password)
+```
+
+**❌ Pas de rate limiting**
+```python
+@app.post("/login")  # Brute force possible
+def login(email, password):
+    ...
+```
+**✅ Solution:** Rate limiting
+```python
+@limiter.limit("5/minute")
+@app.post("/login")
+def login(email, password):
+    ...
+```
+
+**❌ Transactions DB non gérées**
+```python
+account1.balance -= 1000
+account2.balance += 1000
+# Que se passe-t-il si erreur entre les deux?
+```
+**✅ Solution:** Transaction atomique
+```python
+with session.begin():
+    account1.balance -= 1000
+    account2.balance += 1000
+```
+
+---
+
+## 7. Checklist Finale
 
 ### ✅ Design Patterns
 
@@ -1235,6 +1821,18 @@ appliquer_frais_mensuels(comptes)
 - [ ] Je maîtrise encapsulation, héritage, polymorphisme
 - [ ] Je comprends les relations entre classes
 
+### ✅ Backend Development
+
+- [ ] Je sais créer une API REST complète (CRUD)
+- [ ] Je maîtrise l'authentification JWT et OAuth2
+- [ ] Je connais les architectures (MVC, Layered, Hexagonal)
+- [ ] Je gère les transactions DB avec ACID
+- [ ] Je mets en cache avec Redis
+- [ ] J'implémente le rate limiting
+- [ ] J'écris des tests (unitaires, intégration, E2E)
+- [ ] Je connais les patterns de résilience (Circuit Breaker, Saga)
+- [ ] Je monitore avec logs, metrics et tracing
+
 ---
 
 ## 🎯 Conseils pour l'Entretien/Examen
@@ -1254,6 +1852,7 @@ appliquer_frais_mensuels(comptes)
 - **DSA :** LeetCode, HackerRank, "Cracking the Coding Interview"
 - **SQL :** SQLBolt, Mode Analytics SQL Tutorial
 - **UML :** Lucidchart, draw.io, PlantUML
+- **Backend :** FastAPI Docs, Spring Boot Guides, "Building Microservices" (Sam Newman), "Clean Architecture" (Robert C. Martin)
 
 ---
 
