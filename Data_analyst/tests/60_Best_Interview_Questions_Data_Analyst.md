@@ -1,5 +1,6 @@
-# 60 Best Interview Questions - Data Analyst
+# 68 Best Interview Questions - Data Analyst
 ## UniBank Haiti - Commercial Banking Context
+### Édition Complète avec Régression, Séries Temporelles et Tests Non-Paramétriques
 
 **Niveau:** Intermédiaire à Senior  
 **Format:** Question + Réponse complète avec introduction
@@ -20,17 +21,30 @@
 | **N+1 Problem** | Anti-pattern où une requête initiale génère N requêtes supplémentaires, une par résultat |
 | **Agrégation** | Opération qui combine plusieurs valeurs en une seule (SUM, AVG, COUNT, etc.) |
 
-### Power BI et DAX
+### Machine Learning et Modélisation
 
 | Terme | Définition |
 |-------|------------|
-| **DAX** | Data Analysis Expressions - langage de formules pour Power BI, Analysis Services et Power Pivot |
-| **Mesure** | Calcul dynamique évalué au moment de la requête selon le contexte de filtre |
-| **Colonne calculée** | Colonne dont les valeurs sont calculées à l'importation et stockées dans le modèle |
-| **Filter Context** | Ensemble des filtres actifs qui déterminent quelles données sont incluses dans un calcul |
-| **Row Context** | Contexte qui évalue une expression ligne par ligne dans une table |
-| **CALCULATE** | Fonction DAX qui évalue une expression dans un contexte de filtre modifié |
-| **Time Intelligence** | Ensemble de fonctions DAX pour les calculs temporels (YTD, YoY, etc.) |
+| **Apprentissage supervisé** | Modèle entraîné avec des données étiquetées (features + target) |
+| **Apprentissage non supervisé** | Modèle qui découvre des patterns sans étiquettes (clustering) |
+| **Classification** | Prédiction d'une catégorie (défaut oui/non, segment client) |
+| **Régression** | Prédiction d'une valeur continue (montant, LTV) |
+| **AUC-ROC** | Aire sous la courbe ROC - mesure de discrimination du modèle |
+| **Gini** | Coefficient = 2×AUC - 1, mesure le pouvoir discriminant (scoring) |
+| **Overfitting** | Modèle trop adapté aux données d'entraînement, mauvaise généralisation |
+| **Cross-validation** | Technique de validation avec découpage en k folds |
+
+### Types de Variables
+
+| Terme | Définition |
+|-------|------------|
+| **Variable nominale** | Catégorielle sans ordre naturel (type de compte, région) |
+| **Variable ordinale** | Catégorielle avec ordre (rating AAA > AA > A) |
+| **Variable discrète** | Valeurs entières dénombrables (nb de transactions) |
+| **Variable continue** | Valeurs décimales dans un intervalle (montant, taux) |
+| **MCAR** | Missing Completely At Random - manquants aléatoires |
+| **MAR** | Missing At Random - manquants liés à d'autres variables |
+| **MNAR** | Missing Not At Random - manquants liés à la valeur elle-même |
 
 ### Statistiques
 
@@ -395,279 +409,523 @@ WHERE NOT EXISTS (
 
 ---
 
-## SECTION 2: Power BI / DAX (12 Questions)
+## SECTION 2: Types de Variables et Machine Learning (12 Questions)
 
-### Q16. Quelle est la différence entre une mesure et une colonne calculée?
+### Q16. Quelle est la différence entre variable nominale et ordinale?
 
 **Réponse:**
 
-Cette distinction fondamentale en DAX détermine quand et comment un calcul est effectué. Le mauvais choix peut impacter significativement les performances et les résultats.
+Cette distinction est fondamentale pour choisir les bonnes techniques d'analyse et d'encodage. Les deux sont catégorielles mais diffèrent par la notion d'ordre.
 
-| Aspect | Colonne Calculée | Mesure |
-|--------|------------------|--------|
-| **Moment du calcul** | À l'importation des données | À chaque requête/interaction |
-| **Stockage** | Oui, dans le modèle (augmente la taille) | Non, calculée à la volée |
-| **Contexte** | Row context (accès aux valeurs de la ligne) | Filter context (agrégation dynamique) |
-| **Usage typique** | Catégorisation, calculs fixes par ligne | KPIs, totaux, pourcentages dynamiques |
+| Type | Définition | Exemple bancaire | Statistiques possibles |
+|------|------------|------------------|------------------------|
+| **Nominale** | Catégories SANS ordre naturel | Type de compte (Épargne, Courant, DAT) | Mode, Chi-carré |
+| **Ordinale** | Catégories AVEC ordre naturel | Rating crédit (AAA > AA > A > BBB) | Médiane, Mann-Whitney |
 
-```dax
-// Colonne calculée - valeur fixe par ligne
-Profit = Ventes[Revenus] - Ventes[Couts]
+**Encodage approprié:**
+```python
+# Nominale → One-Hot Encoding
+pd.get_dummies(df, columns=['type_compte'])
 
-// Mesure - s'adapte aux filtres visuels
-Total Ventes = SUM(Ventes[Montant])
+# Ordinale → Label Encoding avec ordre
+ordre = {'AAA': 4, 'AA': 3, 'A': 2, 'BBB': 1}
+df['rating_encoded'] = df['rating'].map(ordre)
 ```
 
 ---
 
-### Q17. Expliquez CALCULATE et son importance.
+### Q17. Quelle est la différence entre variable discrète et continue?
 
 **Réponse:**
 
-CALCULATE est la fonction la plus importante et la plus puissante de DAX. Elle permet de modifier le contexte de filtre dans lequel une expression est évaluée, ce qui est essentiel pour créer des calculs conditionnels.
+Cette distinction détermine les visualisations et tests statistiques appropriés.
 
-**Définition:** CALCULATE évalue une expression dans un contexte de filtre modifié par les arguments de filtre spécifiés.
+| Type | Définition | Exemple | Test/Visualisation |
+|------|------------|---------|-------------------|
+| **Discrète** | Valeurs entières dénombrables | Nb transactions, Nb produits | Bar chart, Poisson |
+| **Continue** | Valeurs décimales dans un intervalle | Montant, Taux d'intérêt | Histogramme, t-test |
 
-```dax
-// Ventes totales (sans modification de contexte)
-Total = SUM(Ventes[Montant])
+**Règle simple:** Si 2.5 n'a pas de sens (2.5 transactions?), c'est discret.
 
-// Ventes VIP seulement - ajoute un filtre
-Ventes VIP = CALCULATE(SUM(Ventes[Montant]), Clients[Segment] = "VIP")
-
-// Ventes année précédente - modifie le contexte de date
-Ventes LY = CALCULATE(SUM(Ventes[Montant]), SAMEPERIODLASTYEAR(Calendrier[Date]))
+```python
+# Identifier le type
+if df['col'].dtype == 'int64' and df['col'].nunique() < 20:
+    print("Probablement discrète")
+elif df['col'].dtype == 'float64':
+    print("Continue")
 ```
 
 ---
 
-### Q18. Comment calculer le pourcentage du total en DAX?
+### Q18. Quels sont les niveaux de mesure des variables (NOIR)?
 
 **Réponse:**
 
-Le calcul du pourcentage du total est un pattern DAX fondamental qui nécessite de comprendre comment supprimer les filtres avec ALL pour obtenir le total global.
+Les quatre niveaux de mesure déterminent quelles opérations mathématiques sont valides. Mnémotechnique: **NOIR**.
 
-```dax
-// Pourcentage du total global
-% du Total = 
-DIVIDE(
-    SUM(Ventes[Montant]),
-    CALCULATE(SUM(Ventes[Montant]), ALL(Ventes)),
-    0
+| Niveau | Opérations | Exemple | Zéro |
+|--------|------------|---------|------|
+| **N**ominale | = ≠ | Type de compte | N/A |
+| **O**rdinale | = ≠ < > | Rating crédit | N/A |
+| **I**ntervalle | + - | Température °C | Arbitraire |
+| **R**atio | × ÷ | Montant HTG | Absolu (0 = rien) |
+
+**Important:** Le revenu est Ratio (0 = pas de revenu), la température est Intervalle (0°C n'est pas "pas de température").
+
+---
+
+### Q19. Comment traiter les valeurs manquantes (MCAR, MAR, MNAR)?
+
+**Réponse:**
+
+Le type de manquant détermine la stratégie d'imputation appropriée.
+
+| Type | Signification | Diagnostic | Traitement |
+|------|---------------|------------|------------|
+| **MCAR** | Manquant complètement aléatoire | Indépendant de toutes les variables | Imputation simple (médiane) |
+| **MAR** | Manquant aléatoire | Dépend d'autres variables observées | Imputation par groupe |
+| **MNAR** | Manquant non aléatoire | Dépend de la valeur elle-même | Modèle spécialisé |
+
+```python
+# Règle des seuils
+# < 5% → Suppression acceptable
+# 5-20% → Imputation nécessaire
+# > 20% → Envisager suppression de la variable
+
+# Imputation médiane
+df['col'].fillna(df['col'].median(), inplace=True)
+
+# Imputation par groupe (MAR)
+df['revenu'] = df.groupby('type_emploi')['revenu'].transform(
+    lambda x: x.fillna(x.median())
 )
 
-// Pourcentage au sein d'une catégorie (garde le filtre catégorie)
-% Catégorie = 
-DIVIDE(
-    SUM(Ventes[Montant]),
-    CALCULATE(SUM(Ventes[Montant]), ALLEXCEPT(Ventes, Ventes[Categorie]))
-)
+# IMPORTANT: Fit sur train seulement!
+scaler.fit_transform(X_train)
+scaler.transform(X_test)  # Pas de fit!
 ```
 
 ---
 
-### Q19. Quelle est la différence entre ALL, ALLEXCEPT et ALLSELECTED?
+### Q20. Quelle est la différence entre apprentissage supervisé et non supervisé?
 
 **Réponse:**
 
-Ces trois fonctions modifient le contexte de filtre de manières différentes. Comprendre leurs nuances est crucial pour créer des calculs de pourcentage et de comparaison corrects.
+Cette distinction fondamentale en ML détermine le type de problème et les algorithmes à utiliser.
 
-| Fonction | Effet sur les filtres |
-|----------|----------------------|
-| **ALL** | Supprime TOUS les filtres de la table ou colonne spécifiée |
-| **ALLEXCEPT** | Supprime tous les filtres SAUF ceux des colonnes spécifiées |
-| **ALLSELECTED** | Supprime les filtres visuels locaux, mais garde les filtres de slicers et de page |
+| Aspect | Supervisé | Non Supervisé |
+|--------|-----------|---------------|
+| **Données** | Avec labels (X, Y) | Sans labels (X seulement) |
+| **Objectif** | Prédire Y | Découvrir des patterns |
+| **Exemples** | Classification, Régression | Clustering, Réduction dim. |
+| **Bancaire** | Scoring crédit, Fraude | Segmentation clients |
 
-```dax
-// Ignore tous les filtres - total absolu
-Total Global = CALCULATE(SUM(Montant), ALL(Ventes))
+```python
+# Supervisé - Classification
+from sklearn.linear_model import LogisticRegression
+model = LogisticRegression()
+model.fit(X_train, y_train)  # Avec target!
+y_pred = model.predict(X_test)
 
-// Garde le filtre sur Région - total par région
-Total Région = CALCULATE(SUM(Montant), ALLEXCEPT(Ventes, Ventes[Region]))
+# Non supervisé - Clustering
+from sklearn.cluster import KMeans
+kmeans = KMeans(n_clusters=5)
+labels = kmeans.fit_predict(X)  # Pas de target!
 ```
 
 ---
 
-### Q20. Comment créer une mesure Year-to-Date (YTD)?
+### Q21. Quelle est la différence entre Classification et Régression?
 
 **Réponse:**
 
-Les calculs Year-to-Date sont essentiels pour le reporting financier. DAX offre des fonctions dédiées de Time Intelligence qui simplifient ces calculs.
+Les deux sont supervisés mais diffèrent par le type de variable cible.
 
-```dax
-// Méthode 1: TOTALYTD - la plus simple
-Ventes YTD = TOTALYTD(SUM(Ventes[Montant]), Calendrier[Date])
+| Aspect | Classification | Régression |
+|--------|----------------|------------|
+| **Target** | Catégorielle (classes) | Continue (valeurs) |
+| **Output** | Probabilités/Classes | Valeur numérique |
+| **Métriques** | Accuracy, AUC, F1 | MAE, RMSE, R² |
+| **Bancaire** | Défaut oui/non | Montant de perte |
 
-// Méthode 2: CALCULATE + DATESYTD - plus flexible
-Ventes YTD v2 = 
-CALCULATE(
-    SUM(Ventes[Montant]),
-    DATESYTD(Calendrier[Date])
-)
+**Cas bancaires:**
+- **Classification:** Scoring crédit, Détection fraude, Prédiction churn
+- **Régression:** Estimation LTV, Prédiction montant de prêt, LGD
 
-// YTD avec année fiscale personnalisée (fin en juin)
-Ventes YTD Fiscal = TOTALYTD(SUM(Ventes[Montant]), Calendrier[Date], "06-30")
+---
+
+### Q22. Qu'est-ce que le Gini et l'AUC en scoring?
+
+**Réponse:**
+
+Ces métriques mesurent le pouvoir discriminant d'un modèle de scoring - sa capacité à séparer les bons des mauvais clients.
+
+**Formule:** Gini = 2 × AUC - 1
+
+| Métrique | Plage | Interprétation |
+|----------|-------|----------------|
+| **AUC** | 0.5 - 1.0 | 0.5 = aléatoire, 1.0 = parfait |
+| **Gini** | 0 - 1.0 | > 0.4 acceptable, > 0.5 bon |
+
+```python
+from sklearn.metrics import roc_auc_score
+
+# Calcul
+y_proba = model.predict_proba(X_test)[:, 1]
+auc = roc_auc_score(y_test, y_proba)
+gini = 2 * auc - 1
+
+print(f"AUC: {auc:.4f}")
+print(f"Gini: {gini:.4f}")
 ```
 
 ---
 
-### Q21. Comment comparer avec l'année précédente (YoY)?
+### Q23. Expliquez Precision, Recall et F1-Score.
 
 **Réponse:**
 
-La comparaison Year-over-Year est un indicateur clé de croissance. SAMEPERIODLASTYEAR est la fonction de base pour ce type de calcul en DAX.
+Ces métriques sont cruciales pour les problèmes de classification déséquilibrée comme la détection de fraude.
 
-```dax
-// Valeur de l'année précédente
-Ventes LY = 
-CALCULATE(
-    SUM(Ventes[Montant]),
-    SAMEPERIODLASTYEAR(Calendrier[Date])
-)
+| Métrique | Formule | Question | Priorité si... |
+|----------|---------|----------|----------------|
+| **Precision** | TP/(TP+FP) | Parmi les prédits positifs, combien sont vrais? | Coût des faux positifs élevé |
+| **Recall** | TP/(TP+FN) | Parmi les vrais positifs, combien détectés? | Coût des faux négatifs élevé |
+| **F1** | 2×(P×R)/(P+R) | Équilibre P et R | Besoin d'équilibre |
 
-// Variation en pourcentage
-Variation YoY = 
-VAR CurrentYear = SUM(Ventes[Montant])
-VAR LastYear = [Ventes LY]
-RETURN
-DIVIDE(CurrentYear - LastYear, LastYear, 0)
+**En détection de fraude:** Privilégier le **Recall** car manquer une fraude coûte plus cher que vérifier une fausse alerte.
 
-// Formatage pour affichage
-Variation YoY % = FORMAT([Variation YoY], "0.0%")
+```python
+from sklearn.metrics import precision_score, recall_score, f1_score
+
+precision = precision_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred)
 ```
 
 ---
 
-### Q22. Qu'est-ce que le row context vs filter context?
+### Q24. Comment gérer un dataset déséquilibré (1% fraude)?
 
 **Réponse:**
 
-La compréhension des contextes est fondamentale en DAX. Ces deux types de contextes déterminent comment les expressions sont évaluées et quelles données sont accessibles.
+Le déséquilibre de classes est commun en banque (peu de défauts, peu de fraudes). Plusieurs techniques existent.
 
-| Context | Où il existe | Comportement |
-|---------|--------------|--------------|
-| **Row Context** | Colonnes calculées, itérateurs (SUMX, AVERAGEX) | Évalue l'expression pour chaque ligne individuellement |
-| **Filter Context** | Mesures, CALCULATE | Définit quelles lignes sont incluses avant le calcul |
+| Technique | Description | Quand utiliser |
+|-----------|-------------|----------------|
+| **SMOTE** | Suréchantillonnage synthétique | Générer plus de cas minoritaires |
+| **Class weights** | Pénaliser plus les erreurs sur minorité | Simple, dans le modèle |
+| **Undersampling** | Réduire la classe majoritaire | Beaucoup de données |
+| **Ajuster le seuil** | Seuil < 0.5 | Privilégier le recall |
 
-```dax
-// Row context - calculé pour chaque ligne de la table
-Marge = Ventes[Prix] - Ventes[Cout]
+```python
+# SMOTE
+from imblearn.over_sampling import SMOTE
+smote = SMOTE(random_state=42)
+X_res, y_res = smote.fit_resample(X_train, y_train)
 
-// Filter context - agrège toutes les lignes visibles selon les filtres
-Total Marge = SUM(Ventes[Marge])
+# Class weights
+from sklearn.linear_model import LogisticRegression
+model = LogisticRegression(class_weight='balanced')
+
+# Ajuster le seuil
+y_pred = (y_proba >= 0.3).astype(int)  # Seuil plus bas
 ```
 
 ---
 
-### Q23. Comment créer un classement (ranking) en DAX?
+### Q25. Qu'est-ce que l'overfitting et comment l'éviter?
 
 **Réponse:**
 
-RANKX est la fonction DAX pour créer des classements dynamiques. Elle est particulièrement utile pour identifier les top/bottom performers.
+L'overfitting se produit quand le modèle apprend trop bien les données d'entraînement, y compris le bruit, et généralise mal aux nouvelles données.
 
-```dax
-// Rang des clients par ventes (1 = meilleur)
-Rang Ventes = 
-RANKX(
-    ALL(Clients),      // Table sur laquelle ranger
-    [Total Ventes],    // Expression de classement
-    ,                  // Valeur à comparer (optionnel)
-    DESC,              // Ordre décroissant
-    DENSE              // Type de rang (pas de trous)
-)
+**Signes:** Train accuracy >> Test accuracy
 
-// Flag pour identifier le Top 10
-Top 10 Flag = IF([Rang Ventes] <= 10, 1, 0)
+**Solutions:**
+
+| Technique | Comment |
+|-----------|---------|
+| **Plus de données** | Réduit le risque naturellement |
+| **Régularisation** | L1 (Lasso), L2 (Ridge) |
+| **Validation croisée** | cv=5 ou cv=10 |
+| **Early stopping** | Arrêter quand test error augmente |
+| **Simplifier** | Moins de features, max_depth plus petit |
+
+```python
+from sklearn.model_selection import cross_val_score
+
+# Validation croisée
+scores = cross_val_score(model, X, y, cv=5, scoring='roc_auc')
+print(f"AUC: {scores.mean():.4f} (+/- {scores.std():.4f})")
 ```
 
 ---
 
-### Q24. Qu'est-ce que FILTER et quand l'utiliser?
+### Q26. Comment calculer l'Expected Loss (EL) en risque de crédit?
 
 **Réponse:**
 
-FILTER est une fonction de table qui retourne un sous-ensemble filtré d'une table. Elle est nécessaire quand les conditions de filtrage simples ne suffisent pas.
+L'Expected Loss est la perte moyenne anticipée sur un portefeuille de crédit. C'est un concept fondamental en gestion des risques.
 
-```dax
-// Filtre simple (préféré pour les cas simples - plus performant)
-Ventes VIP = CALCULATE(SUM(Montant), Clients[Segment] = "VIP")
+**Formule:** EL = PD × LGD × EAD
 
-// FILTER pour conditions complexes basées sur des mesures
-Gros Clients = 
-CALCULATE(
-    SUM(Montant),
-    FILTER(
-        Clients,
-        CALCULATE(SUM(Ventes[Montant])) > 100000
-    )
-)
-```
+| Composante | Définition | Valeur typique |
+|------------|------------|----------------|
+| **PD** | Probability of Default | 1-15% |
+| **LGD** | Loss Given Default | 30-60% |
+| **EAD** | Exposure at Default | Montant exposé |
 
-**Règle:** Utiliser FILTER uniquement quand la condition dépend d'un calcul (mesure), pas pour les filtres simples sur des colonnes.
+**Exemple:**
+- PD = 5%, LGD = 40%, EAD = 100,000 HTG
+- EL = 0.05 × 0.40 × 100,000 = **2,000 HTG**
 
 ---
 
-### Q25. Comment utiliser les variables (VAR/RETURN)?
+### Q27. Quels algorithmes pour quels cas d'usage bancaires?
 
 **Réponse:**
 
-Les variables DAX améliorent la lisibilité et la performance en stockant des valeurs intermédiaires qui ne sont calculées qu'une seule fois.
+Le choix de l'algorithme dépend du cas d'usage et des contraintes (interprétabilité, performance).
 
-```dax
-// Sans variables - calculs répétés, difficile à lire
-Marge % = DIVIDE(SUM(Ventes[Montant]) - SUM(Ventes[Cout]), SUM(Ventes[Montant]), 0)
+| Cas d'usage | Algorithme | Raison |
+|-------------|------------|--------|
+| **Scoring crédit** | Régression logistique | Interprétabilité réglementaire |
+| **Détection fraude** | Random Forest, XGBoost | Performance sur déséquilibre |
+| **Segmentation clients** | K-Means | Non supervisé, clustering |
+| **Prédiction churn** | Gradient Boosting | Bon équilibre perf/interprétabilité |
+| **Détection anomalies** | Isolation Forest | Non supervisé, peu de labels |
 
-// Avec variables - plus clair et plus performant
-Marge Nette % = 
-VAR Revenus = SUM(Ventes[Montant])
-VAR Couts = SUM(Ventes[Cout])
-VAR Marge = Revenus - Couts
-RETURN
-DIVIDE(Marge, Revenus, 0)
+```python
+# Scoring crédit - Interprétable
+from sklearn.linear_model import LogisticRegression
+model = LogisticRegression()
+
+# Fraude - Performance
+from sklearn.ensemble import RandomForestClassifier
+model = RandomForestClassifier(class_weight='balanced')
+
+# Segmentation - Clustering
+from sklearn.cluster import KMeans
+kmeans = KMeans(n_clusters=5)
 ```
-
----
-
-### Q26. Comment gérer les relations many-to-many?
-
-**Réponse:**
-
-Les relations many-to-many (plusieurs-à-plusieurs) sont complexes en Power BI car une valeur peut correspondre à plusieurs enregistrements des deux côtés. Il existe plusieurs stratégies.
-
-1. **Table de pont (bridge table)** - Créer une table intermédiaire avec les paires de correspondances
-2. **CROSSFILTER** - Activer temporairement le filtrage bidirectionnel
-3. **TREATAS** - Créer une relation virtuelle sans modifier le modèle
-
-```dax
-// Utilisation de TREATAS pour simuler une relation
-Ventes par Tag = 
-CALCULATE(
-    SUM(Ventes[Montant]),
-    TREATAS(VALUES(Tags[TagID]), Produits[TagID])
-)
-```
-
----
-
-### Q27. Quelle est la différence entre Import, DirectQuery et Live Connection?
-
-**Réponse:**
-
-Le mode de connexion aux données détermine où les données sont stockées et quand elles sont rafraîchies. Le choix impacte les performances et les fonctionnalités disponibles.
-
-| Mode | Où sont les données | Rafraîchissement | Performance | Fonctionnalités DAX |
-|------|---------------------|------------------|-------------|---------------------|
-| **Import** | Copiées dans le modèle Power BI | Planifié (manuel ou automatique) | Excellente | Complètes |
-| **DirectQuery** | Restent à la source | Temps réel à chaque interaction | Dépend de la source | Limitées |
-| **Live Connection** | SSAS ou datasets Power BI | Temps réel | Dépend de la source | Définies à la source |
-
-**Recommandation:** Import par défaut pour les meilleures performances. DirectQuery pour les données volumineuses (>1GB) ou le temps réel requis.
 
 ---
 
 ## SECTION 3: Statistiques (10 Questions)
 
-### Q28. Quelle est la différence entre moyenne et médiane? Quand utiliser chacune?
+### Q28. Quelles sont les hypothèses de la régression linéaire (LINE)?
+
+**Réponse:**
+
+La régression linéaire repose sur quatre hypothèses fondamentales, résumées par l'acronyme **LINE**. Violer ces hypothèses peut invalider les résultats.
+
+| Hypothèse | Description | Diagnostic |
+|-----------|-------------|------------|
+| **L**inéarité | Relation linéaire entre X et Y | Graphique résidus vs fitted |
+| **I**ndépendance | Observations indépendantes | Test de Durbin-Watson |
+| **N**ormalité | Résidus normalement distribués | QQ-plot, Shapiro-Wilk |
+| **É**galité variances | Homoscédasticité (variance constante) | Test de Breusch-Pagan |
+
+```python
+import statsmodels.api as sm
+from statsmodels.stats.stattools import durbin_watson
+
+# Ajuster le modèle
+X_const = sm.add_constant(X)
+model = sm.OLS(y, X_const).fit()
+
+# Vérifier les hypothèses
+dw = durbin_watson(model.resid)  # DW ≈ 2 = OK
+print(f"Durbin-Watson: {dw:.3f}")
+```
+
+---
+
+### Q29. Comment détecter et traiter la multicolinéarité?
+
+**Réponse:**
+
+La multicolinéarité survient quand des variables explicatives sont fortement corrélées entre elles. Elle rend les coefficients instables et difficiles à interpréter.
+
+**Détection avec VIF (Variance Inflation Factor):**
+
+| VIF | Interprétation | Action |
+|-----|----------------|--------|
+| 1 | Pas de corrélation | Idéal |
+| 1-5 | Corrélation modérée | Acceptable |
+| 5-10 | Corrélation élevée | Attention |
+| > 10 | Multicolinéarité sévère | Intervention requise |
+
+```python
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+
+def calculate_vif(X):
+    vif_data = pd.DataFrame()
+    vif_data["Variable"] = X.columns
+    vif_data["VIF"] = [variance_inflation_factor(X.values, i) 
+                       for i in range(X.shape[1])]
+    return vif_data.sort_values('VIF', ascending=False)
+
+# Si VIF > 10: supprimer une variable ou créer un indice composite
+```
+
+---
+
+### Q30. Quelle est la différence entre R² et R² ajusté?
+
+**Réponse:**
+
+Les deux mesurent le pouvoir explicatif du modèle, mais avec une différence cruciale pour la sélection de variables.
+
+| Métrique | Formule | Comportement |
+|----------|---------|--------------|
+| **R²** | 1 - SSE/SST | Augmente TOUJOURS avec plus de variables |
+| **R² ajusté** | 1 - [(1-R²)(n-1)/(n-p-1)] | Peut DIMINUER si variable inutile |
+
+**Règle:** Utiliser R² ajusté pour comparer des modèles avec différents nombres de variables.
+
+```python
+print(f"R²: {model.rsquared:.4f}")
+print(f"R² ajusté: {model.rsquared_adj:.4f}")
+
+# Si R² ajusté baisse en ajoutant une variable → ne pas l'inclure
+```
+
+---
+
+### Q31. Comment interpréter un coefficient de régression?
+
+**Réponse:**
+
+Le coefficient β mesure l'effet marginal de X sur Y, toutes autres choses égales par ailleurs.
+
+**Exemple:** Dans le modèle `Prêt = 50000 + 0.25×Revenu + 5000×Ancienneté`:
+
+| Coefficient | Interprétation |
+|-------------|----------------|
+| β₀ = 50000 | Prêt de base si revenu et ancienneté = 0 |
+| β₁ = 0.25 | Pour +1 HTG de revenu, le prêt augmente de 0.25 HTG |
+| β₂ = 5000 | Pour +1 an d'ancienneté, le prêt augmente de 5000 HTG |
+
+**Significativité:**
+- p-value < 0.05 → Coefficient significatif
+- IC ne contient pas 0 → Significatif
+
+---
+
+### Q32. Comment tester la stationnarité d'une série temporelle?
+
+**Réponse:**
+
+Une série stationnaire a une moyenne et variance constantes dans le temps. C'est une condition préalable pour la plupart des modèles de prévision.
+
+**Test ADF (Augmented Dickey-Fuller):**
+- H₀: Série non stationnaire (racine unitaire)
+- H₁: Série stationnaire
+
+```python
+from statsmodels.tsa.stattools import adfuller
+
+result = adfuller(series)
+print(f"ADF Statistic: {result[0]:.4f}")
+print(f"P-value: {result[1]:.4f}")
+
+# Si p < 0.05 → Stationnaire
+# Sinon → Différencier: series_diff = series.diff().dropna()
+```
+
+**Si non stationnaire:** Appliquer différenciation (d=1, d=2) avant ARIMA.
+
+---
+
+### Q33. Qu'est-ce qu'un modèle ARIMA(p,d,q)?
+
+**Réponse:**
+
+ARIMA est le modèle de référence pour les séries temporelles. Il combine trois composantes.
+
+| Paramètre | Signification | Comment choisir |
+|-----------|---------------|-----------------|
+| **p** | Ordre autorégressif (AR) | PACF coupe au lag p |
+| **d** | Ordre de différenciation | Nb de diff. pour stationnarité |
+| **q** | Ordre moyenne mobile (MA) | ACF coupe au lag q |
+
+```python
+from statsmodels.tsa.arima.model import ARIMA
+
+# ARIMA(1,1,1) pour une série avec tendance
+model = ARIMA(series, order=(1, 1, 1))
+results = model.fit()
+
+# Prévision
+forecast = results.forecast(steps=12)
+```
+
+**SARIMA:** ARIMA + saisonnalité → SARIMA(p,d,q)(P,D,Q,s)
+
+---
+
+### Q34. Quand utiliser Mann-Whitney au lieu du t-test?
+
+**Réponse:**
+
+Mann-Whitney U est l'alternative non-paramétrique au t-test pour comparer deux groupes indépendants.
+
+**Utiliser Mann-Whitney quand:**
+- Distribution non normale (Shapiro-Wilk p < 0.05)
+- Échantillon petit (n < 30)
+- Données ordinales
+- Présence d'outliers importants
+
+```python
+from scipy.stats import mannwhitneyu, shapiro
+
+# Vérifier normalité d'abord
+_, p_normal = shapiro(groupe1)
+
+if p_normal < 0.05:  # Non normal
+    stat, p = mannwhitneyu(groupe1, groupe2)
+    print(f"Mann-Whitney U: p = {p:.4f}")
+else:  # Normal
+    stat, p = ttest_ind(groupe1, groupe2)
+    print(f"t-test: p = {p:.4f}")
+```
+
+---
+
+### Q35. Quelle est la différence entre Pearson et Spearman?
+
+**Réponse:**
+
+Les deux mesurent la corrélation mais avec des hypothèses différentes.
+
+| Aspect | Pearson (r) | Spearman (ρ) |
+|--------|-------------|--------------|
+| Type de relation | Linéaire | Monotone |
+| Type de données | Continues, normales | Ordinales ou non-normales |
+| Sensibilité outliers | Élevée | Faible (basé sur rangs) |
+| Interprétation | Variance partagée | Concordance des rangs |
+
+```python
+from scipy.stats import pearsonr, spearmanr
+
+r_pearson, p_pearson = pearsonr(x, y)
+r_spearman, p_spearman = spearmanr(x, y)
+
+# Utiliser Spearman si:
+# - Distribution asymétrique (revenus bancaires)
+# - Présence d'outliers
+# - Variables ordinales
+```
+
+**Règle:** Pour les données bancaires (souvent asymétriques), préférer Spearman.
+
+---
+
+## SECTION 4: Statistiques (10 Questions)
+
+### Q36. Quelle est la différence entre moyenne et médiane? Quand utiliser chacune?
 
 **Réponse:**
 
@@ -858,7 +1116,7 @@ Ces deux types d'erreurs représentent les deux façons dont un test d'hypothès
 
 ---
 
-## SECTION 4: KPIs Bancaires (8 Questions)
+## SECTION 5: KPIs Bancaires (8 Questions)
 
 ### Q38. Qu'est-ce que le NPL Ratio et pourquoi est-il important?
 
@@ -1011,7 +1269,7 @@ L'AML (Anti-Money Laundering) vise à détecter et prévenir le blanchiment d'ar
 
 ---
 
-## SECTION 5: Python / Pandas (8 Questions)
+## SECTION 6: Python / Pandas (8 Questions)
 
 ### Q46. Comment gérer les valeurs manquantes en Pandas?
 
@@ -1237,7 +1495,7 @@ df.set_index('date').resample('W')['montant'].mean()  # Par semaine
 
 ---
 
-## SECTION 6: Data Visualization & EDA (7 Questions)
+## SECTION 7: Data Visualization & EDA (7 Questions)
 
 ### Q54. Quel graphique utiliser pour quelle situation?
 
@@ -1453,18 +1711,60 @@ plt.show()
 
 ## Résumé Final
 
-### Top 10 des Questions les Plus Probables pour UniBank Haiti
+### Top 20 des Questions les Plus Probables pour UniBank Haiti
 
+**SQL et Python:**
 1. **Q2 (SQL):** ROW_NUMBER vs RANK vs DENSE_RANK - Classement des clients
 2. **Q8 (SQL):** Problème N+1 - Optimisation des requêtes
-3. **Q17 (DAX):** CALCULATE - Fonction centrale de Power BI
-4. **Q18 (DAX):** % du total avec ALL - Reporting
-5. **Q28 (Stats):** Moyenne vs Médiane - Analyse des montants
-6. **Q30 (Stats):** p-value - Tests d'hypothèse
-7. **Q38 (KPI):** NPL Ratio - Qualité du portefeuille
-8. **Q39 (KPI):** ROE vs ROA - Rentabilité bancaire
-9. **Q47 (Python):** groupby - Agrégations par catégorie
-10. **Q55 (EDA):** Étapes d'une analyse exploratoire
+3. **Q47 (Python):** groupby - Agrégations par catégorie
+4. **Q46 (Python):** Gestion des valeurs manquantes
+
+**Types de Variables et ML:**
+5. **Q16:** Variable nominale vs ordinale - Encodage approprié
+6. **Q19:** MCAR/MAR/MNAR - Traitement des manquants
+7. **Q20:** Supervisé vs non supervisé - Choix d'approche
+8. **Q22:** Gini et AUC - Métriques de scoring
+9. **Q24:** Dataset déséquilibré - SMOTE, class weights
+
+**Régression et Séries Temporelles:**
+10. **Q28:** Hypothèses LINE de la régression
+11. **Q29:** Multicolinéarité et VIF
+12. **Q30:** R² vs R² ajusté
+13. **Q32:** Stationnarité et test ADF
+14. **Q34:** Mann-Whitney vs t-test
+15. **Q35:** Pearson vs Spearman
+
+**Statistiques:**
+16. **Q36:** Moyenne vs Médiane - Analyse des montants
+17. **Q38:** p-value - Tests d'hypothèse
+18. **Q40:** Détection des outliers - IQR, Z-score
+
+**KPIs Bancaires:**
+19. **Q46 (KPI):** NPL Ratio - Qualité du portefeuille
+20. **Q51 (KPI):** Expected Loss = PD × LGD × EAD
+
+### Formules Essentielles à Retenir
+
+```
+Gini = 2 × AUC - 1
+EL = PD × LGD × EAD
+IQR = Q3 - Q1 (outlier si x < Q1-1.5×IQR ou x > Q3+1.5×IQR)
+IC 95% = x̄ ± 1.96 × (s/√n)
+F1 = 2 × (Precision × Recall) / (Precision + Recall)
+R² ajusté = 1 - [(1-R²)(n-1)/(n-p-1)]
+VIF > 10 = Multicolinéarité sévère
+Durbin-Watson ≈ 2 = Pas d'autocorrélation
+```
+
+### Mnémotechniques Clés
+
+- **NOIR:** Nominale, Ordinale, Intervalle, Ratio
+- **LINE:** Linéarité, Indépendance, Normalité, Égalité variances
+- **MCAR/MAR/MNAR:** Types de valeurs manquantes
+- **TSCI:** Tendance, Saisonnalité, Cycle, Irrégulier
+- **PAR-FAR:** Precision, Accuracy, Recall, F1
+- **PLE:** EL = PD × LGD × EAD
+- **ARIMA(p,d,q):** AR-Integrated-MA
 
 ---
 

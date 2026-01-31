@@ -108,40 +108,40 @@ LCR = HQLA / Sorties 30j  (≥ 100%)
 
 ---
 
-## FICHE 6: DAX Essentiels
+## FICHE 6: Types de Variables
 
-### Agrégation
-```dax
-SUM(Table[Colonne])
-AVERAGE(Table[Colonne])
-DISTINCTCOUNT(Table[Colonne])
+### Classification Hiérarchique
+```
+QUALITATIVES (Catégorielles)
+├── Nominales: pas d'ordre (type compte, région)
+│   ├── Binaires: 2 catégories (oui/non)
+│   └── Polytomiques: 3+ catégories
+└── Ordinales: ordre naturel (rating AAA > AA > A)
+
+QUANTITATIVES (Numériques)
+├── Discrètes: entiers (nb transactions)
+└── Continues: décimales (montant, taux)
 ```
 
-### CALCULATE (Roi du DAX)
-```dax
-CALCULATE(expression, filtre1, filtre2, ...)
+### Niveaux de Mesure
+```
+Nominal: = ≠ seulement
+Ordinal: = ≠ < > 
+Intervalle: + - (zéro arbitraire)
+Ratio: × ÷ (zéro absolu)
 ```
 
-### Time Intelligence
-```dax
-TOTALYTD(mesure, Calendrier[Date])
-SAMEPERIODLASTYEAR(Calendrier[Date])
-DATESINPERIOD(date, MAX(date), -12, MONTH)
+### Statistiques par Type
+```
+Nominale → Mode, Chi-carré
+Ordinale → Médiane, Mann-Whitney
+Quantitative → Moyenne, t-test, corrélation
 ```
 
-### Modificateurs
-```dax
-ALL(Table)  → Supprime tous les filtres
-ALLEXCEPT(Table, Col)  → Garde certains filtres
-FILTER(Table, condition)  → Table filtrée
+### Encodage
 ```
-
-### Pattern % du Total
-```dax
-% = DIVIDE(
-    SUM(T[Montant]),
-    CALCULATE(SUM(T[Montant]), ALL(T))
-)
+Nominale → One-Hot (pd.get_dummies)
+Ordinale → Label Encoding avec ordre
 ```
 
 ---
@@ -319,19 +319,333 @@ CAGR = (Vf/Vi)^(1/n) - 1
 
 ---
 
+## FICHE 16: Types de Modèles
+
+### Par Objectif
+```
+Descriptif: Comprendre (stats, EDA)
+Prédictif: Anticiper (classification, régression)
+Prescriptif: Recommander (optimisation)
+```
+
+### Par Apprentissage
+```
+Supervisé: avec labels (défaut oui/non)
+Non supervisé: sans labels (segmentation)
+Semi-supervisé: mix
+```
+
+### Modèles Bancaires Clés
+```
+Scoring crédit: Régression logistique (PD)
+Fraude: Random Forest, Isolation Forest
+Churn: Gradient Boosting
+Segmentation: K-Means, RFM
+```
+
+### Formules Risque
+```
+Expected Loss = PD × LGD × EAD
+PD = Probability of Default
+LGD = Loss Given Default  
+EAD = Exposure at Default
+```
+
+---
+
+## FICHE 17: Machine Learning Essentiels
+
+### Algorithmes Classification
+```
+Régression Logistique: Interprétable, scoring
+Arbre de décision: Règles explicites
+Random Forest: Ensemble, robuste
+XGBoost: Performance maximale
+```
+
+### Métriques Classification
+```
+Accuracy = (TP+TN) / Total
+Precision = TP / (TP+FP)
+Recall = TP / (TP+FN)
+F1 = 2×(P×R)/(P+R)
+AUC-ROC: aire sous courbe
+Gini = 2×AUC - 1
+```
+
+### Métriques Régression
+```
+MAE: erreur absolue moyenne
+RMSE: racine erreur quadratique
+R²: variance expliquée
+```
+
+### Bonnes Pratiques
+```
+✅ Fit scaler sur TRAIN seulement
+✅ Validation croisée
+✅ Gérer déséquilibre classes (SMOTE)
+❌ Data leakage
+❌ Overfitting
+```
+
+---
+
 ## Checklist Jour de l'Examen
 
 ```
-□ ACID: Atomicity, Consistency, Isolation, Durability
-□ SOLID: Single, Open/Closed, Liskov, Interface, Dependency
+□ Types variables: Nominale/Ordinale/Discrète/Continue
 □ KPIs: ROE, ROA, NPL, CAR, NIM, CIR
 □ p-value: < 0.05 = significatif
 □ Corrélation: -1 à +1, 0 = pas de relation linéaire
 □ Skewness +: Queue droite, Moyenne > Médiane
 □ NPL: > 90 jours de retard
 □ CAR minimum BRH: 12%
-□ CALCULATE modifie le contexte de filtre
+□ EL = PD × LGD × EAD
+□ Gini = 2 × AUC - 1
 □ ROW_NUMBER vs RANK vs DENSE_RANK
+□ Régression logistique: odds ratio = exp(β)
+□ K-Means: méthode du coude pour k
+```
+
+---
+
+## FICHE 18: Régression Linéaire
+
+### Modèle
+```
+Y = β₀ + β₁X + ε
+β₁ = Changement de Y pour 1 unité de X
+```
+
+### Hypothèses LINE
+```
+L - Linéarité
+I - Indépendance
+N - Normalité résidus
+E - Égalité variances (homoscédasticité)
+```
+
+### Diagnostics
+```
+R²: Variance expliquée (0.7 = 70%)
+R² ajusté: Pénalise variables inutiles
+VIF > 10: Multicolinéarité
+Durbin-Watson ≈ 2: OK
+p-value < 0.05: Coefficient significatif
+```
+
+---
+
+## FICHE 19: Séries Temporelles
+
+### Composantes TSCI
+```
+T - Tendance: Direction long terme
+S - Saisonnalité: Pattern régulier
+C - Cycle: Fluctuations économiques
+I - Irrégulier: Bruit
+```
+
+### Stationnarité
+```
+Test ADF: p < 0.05 → Stationnaire
+Sinon: Différencier (d=1, d=2...)
+```
+
+### Modèles
+```
+ARIMA(p,d,q): AR + Différenciation + MA
+SARIMA: ARIMA + Saison
+Holt-Winters: Niveau + Tendance + Saison
+```
+
+### Métriques
+```
+MAPE < 10%: Excellent
+AIC/BIC: Plus bas = Meilleur
+```
+
+---
+
+## FICHE 20: Tests Non-Paramétriques
+
+### Correspondance
+```
+t-test → Mann-Whitney U
+t-test apparié → Wilcoxon
+ANOVA → Kruskal-Wallis
+Pearson → Spearman
+```
+
+### Quand utiliser?
+```
+✓ Non normalité
+✓ Petit n (< 30)
+✓ Données ordinales
+✓ Outliers présents
+```
+
+### Corrélation Spearman
+```
+Basé sur les rangs
+Robuste aux outliers
+Relation monotone (pas linéaire)
+|ρ| > 0.7 = Forte
+```
+
+---
+
+## FICHE 21: Cas Spéciaux Essentiels
+
+### Valeurs Manquantes
+```
+MCAR: Aléatoire complet → Supprimer OK
+MAR: Dépend d'autres variables → Imputer par groupe
+MNAR: Dépend de la valeur elle-même → Problématique
+
+Imputation: Médiane > Moyenne (outliers)
+KNN Imputer, MICE pour avancé
+```
+
+### Outliers
+```
+IQR: Q1 - 1.5×IQR < x < Q3 + 1.5×IQR
+Z-score > 3: Outlier
+
+Traitement:
+- Supprimer (avec prudence)
+- Winsoriser (capper aux percentiles)
+- Transformer (log)
+- Flaguer (fraude!)
+```
+
+### ACP
+```
+But: Réduire dimensions
+Standardiser OBLIGATOIRE
+Kaiser: Garder eigenvalues > 1
+Variance cumulative > 80%
+KMO > 0.6: OK pour ACP
+```
+
+### ANOVA
+```
+3+ groupes → ANOVA (F-test)
+Si significatif → Post-hoc Tukey
+Levene p < 0.05 → Variances inégales → Welch ANOVA
+η² > 0.14: Grand effet
+```
+
+---
+
+## FICHE 22: A/B Testing
+
+### Terminologie
+```
+Baseline: Taux actuel (contrôle)
+MDE: Effet Minimal Détectable
+Lift: (B - A) / A × 100%
+Puissance: P(détecter vrai effet) = 80%
+α: P(faux positif) = 5%
+```
+
+### Étapes
+```
+1. HYPOTHÈSE: "B augmentera conversion de X%"
+2. DESIGN: Taille échantillon, durée, métriques
+3. RANDOMISER: Assignation aléatoire A/B
+4. EXÉCUTER: Collecter données (≥ 7 jours)
+5. ANALYSER: z-test, IC, décision
+```
+
+### Pièges à éviter
+```
+- Peeking: Ne pas regarder avant la fin
+- Multiple testing: Corriger si 3+ variantes
+- Durée trop courte: Min 1 semaine
+- Effet nouveauté: Peut biaiser résultats initiaux
+```
+
+### Analyse
+```
+p < 0.05 + Lift > 0 → Déployer B
+p < 0.05 + Lift < 0 → Garder A
+p ≥ 0.05 → Pas de conclusion, continuer
+IC ne contient pas 0 → Significatif
+```
+
+---
+
+## FICHE 23: Éthique et Gouvernance
+
+### Principes TERB
+```
+T - Transparence: Expliquer les décisions
+E - Équité: Pas de discrimination
+R - Responsabilité: Assumer conséquences
+B - Bénéfice: Valeur pour tous
+```
+
+### Biais Algorithmiques
+```
+Disparate Impact = Taux_minorité / Taux_majorité
+DI < 0.8 (80%) → DISCRIMINATION potentielle
+
+Variables proxy dangereuses:
+- Code postal (corrélé origine)
+- Prénom (corrélé genre)
+```
+
+### Explicabilité (XAI)
+```
+SHAP: Explication locale + globale
+Feature Importance: Impact de chaque variable
+Droit à l'explication: Obligatoire pour refus crédit
+```
+
+### Droits des Personnes (AREPO)
+```
+A - Accès: Voir ses données
+R - Rectification: Corriger erreurs
+E - Effacement: Droit à l'oubli
+P - Portabilité: Récupérer ses données
+O - Opposition: Refuser traitement
+```
+
+### Gouvernance
+```
+Classification: Public < Interne < Confidentiel < Strictement confidentiel
+Moindre privilège: Accès minimal nécessaire
+Audit trail: Tracer tous les accès
+Rétention: 10 ans transactions (légal)
+```
+
+---
+
+## Checklist Jour de l'Examen
+
+```
+□ Types variables: Nominale/Ordinale/Discrète/Continue
+□ KPIs: ROE, ROA, NPL, CAR, NIM, CIR
+□ p-value: < 0.05 = significatif
+□ Corrélation: -1 à +1, 0 = pas de relation linéaire
+□ Skewness +: Queue droite, Moyenne > Médiane
+□ NPL: > 90 jours de retard
+□ CAR minimum BRH: 12%
+□ EL = PD × LGD × EAD
+□ Gini = 2 × AUC - 1
+□ ROW_NUMBER vs RANK vs DENSE_RANK
+□ Régression logistique: odds ratio = exp(β)
+□ K-Means: méthode du coude pour k
+□ RÉGRESSION: LINE, VIF, DW, R²
+□ SÉRIES TEMP: ARIMA, stationnarité (ADF)
+□ NON-PARAM: Mann-Whitney, Kruskal-Wallis
+□ MANQUANTS: MCAR/MAR/MNAR
+□ OUTLIERS: IQR, winsorisation
+□ A/B TEST: MDE, puissance 80%, α 5%, randomisation
+□ ÉTHIQUE: Disparate Impact ≥ 0.8, SHAP explicabilité
+□ DROITS: AREPO (Accès, Rectification, Effacement, Portabilité, Opposition)
 ```
 
 ---

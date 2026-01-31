@@ -33,7 +33,7 @@ Ce dossier contient des études de cas complètes couvrant tous les aspects de l
 - Calcul des KPIs bancaires (ROE, ROA, NIM, NPL, CAR)
 - Analyse de portefeuille de crédit
 - Requêtes SQL pour analyse de risque
-- Mesures DAX pour Power BI
+- Segmentation et analyse client
 - Recommandations business
 
 **Formules essentielles:**
@@ -88,6 +88,26 @@ LAG(valeur) OVER (ORDER BY periode)
 | Comparer 3+ moyennes | ANOVA |
 | Variables catégorielles | Chi-carré |
 | Corrélation | Pearson/Spearman |
+
+---
+
+### 5. ML_FULL/etude_cas_machine_learning.md (À VENIR)
+**Thème:** Machine Learning Bancaire  
+**Niveau:** Intermédiaire-Avancé  
+**Compétences testées:**
+- Préparation des données pour ML
+- Modèles de scoring de crédit
+- Détection de fraude
+- Prédiction de churn
+- Évaluation et interprétation des modèles
+
+**Algorithmes clés:**
+| Cas d'usage | Algorithme recommandé |
+|-------------|----------------------|
+| Scoring crédit | Régression logistique, Gradient Boosting |
+| Détection fraude | Random Forest, Isolation Forest |
+| Segmentation | K-Means, Clustering hiérarchique |
+| Churn | XGBoost, Random Forest |
 
 ---
 
@@ -188,16 +208,23 @@ SUM() OVER (ORDER BY ...)
 LAG(col, 1) OVER (ORDER BY ...)
 ```
 
-### DAX essentiels
-```dax
--- Pourcentage du total
-DIVIDE(SUM(...), CALCULATE(SUM(...), ALL(...)))
+### ML essentiels
+```python
+# Régression logistique pour scoring
+from sklearn.linear_model import LogisticRegression
+model = LogisticRegression()
+model.fit(X_train, y_train)
+proba = model.predict_proba(X_test)[:, 1]
 
--- YTD
-TOTALYTD(SUM(...), Calendar[Date])
+# Métriques
+from sklearn.metrics import roc_auc_score
+auc = roc_auc_score(y_test, proba)
+gini = 2 * auc - 1
 
--- Comparaison N-1
-CALCULATE(SUM(...), SAMEPERIODLASTYEAR(...))
+# K-Means pour segmentation
+from sklearn.cluster import KMeans
+kmeans = KMeans(n_clusters=5)
+labels = kmeans.fit_predict(X_scaled)
 ```
 
 ---
@@ -207,7 +234,7 @@ CALCULATE(SUM(...), SAMEPERIODLASTYEAR(...))
 - `/Foundational/` - Manuels de préparation par sujet
 - `/revisions/` - Fiches de synthèse
 - `/tests/` - Questions d'entraînement
-- `/PowerBI/` - Manuels DAX et BI
+- `/out_of_scope/` - Documents hors périmètre (PowerBI, DAX)
 
 ---
 
