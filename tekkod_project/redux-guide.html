@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Redux & Redux Toolkit — Complete Guide</title>
+<style>
+  :root {
+    --purple: #764abc;
+    --purple-light: #9b7dd4;
+    --purple-dark: #5a3a8e;
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #242836;
+    --border: #2e3345;
+    --text: #e2e4ea;
+    --text-dim: #8b8fa3;
+    --accent: #7c6bf0;
+    --green: #4ade80;
+    --orange: #fb923c;
+    --blue: #60a5fa;
+    --red: #f87171;
+    --cyan: #22d3ee;
+    --yellow: #facc15;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── Header ── */
+  .hero {
+    background: linear-gradient(135deg, #1a1030 0%, #0f1117 50%, #111827 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 20px 50px;
+    text-align: center;
+  }
+  .hero h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #a78bfa, #7c3aed, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 12px;
+  }
+  .hero .subtitle {
+    color: var(--text-dim);
+    font-size: 1.15rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* ── Container ── */
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ── Sections ── */
+  section {
+    padding: 56px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #c4b5fd;
+    margin-bottom: 10px;
+  }
+  h2 .num {
+    color: var(--purple-light);
+    opacity: .5;
+    margin-right: 8px;
+    font-weight: 400;
+  }
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 32px 0 12px;
+  }
+  p { margin-bottom: 16px; color: var(--text); }
+  .dim { color: var(--text-dim); }
+
+  /* ── Code blocks ── */
+  pre {
+    background: #13151e;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    overflow-x: auto;
+    font-size: 0.88rem;
+    line-height: 1.75;
+    margin: 16px 0 24px;
+    font-family: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace;
+  }
+  code {
+    font-family: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace;
+    font-size: 0.88rem;
+  }
+  .inline-code {
+    background: var(--surface2);
+    padding: 2px 7px;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    color: #c4b5fd;
+  }
+
+  /* syntax colors */
+  .kw { color: #c792ea; }       /* keyword */
+  .fn { color: #82aaff; }       /* function */
+  .str { color: #c3e88d; }      /* string */
+  .cmt { color: #546e7a; }      /* comment */
+  .type { color: #ffcb6b; }     /* type */
+  .num-lit { color: #f78c6c; }  /* number */
+  .op { color: #89ddff; }       /* operator */
+  .param { color: #f07178; }    /* parameter */
+  .prop { color: #f07178; }     /* property */
+  .const-name { color: #82aaff; }
+
+  /* ── Diagram Boxes ── */
+  .diagram {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px;
+    margin: 24px 0;
+    overflow-x: auto;
+  }
+  .diagram-title {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  /* Flow diagram */
+  .flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    flex-wrap: wrap;
+    padding: 10px 0;
+  }
+  .flow-node {
+    padding: 16px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-align: center;
+    min-width: 120px;
+    position: relative;
+  }
+  .flow-arrow {
+    font-size: 1.6rem;
+    color: var(--text-dim);
+    padding: 0 8px;
+    flex-shrink: 0;
+  }
+  .flow-label {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    text-align: center;
+    margin-top: 4px;
+    display: block;
+  }
+  .node-view       { background: #1e3a5f; border: 2px solid var(--blue); color: var(--blue); }
+  .node-action     { background: #3b1f2b; border: 2px solid var(--red); color: var(--red); }
+  .node-reducer    { background: #2d1f0e; border: 2px solid var(--orange); color: var(--orange); }
+  .node-store      { background: #1a2e1a; border: 2px solid var(--green); color: var(--green); }
+  .node-middleware  { background: #2a1f3d; border: 2px solid var(--purple-light); color: var(--purple-light); }
+
+  /* Comparison table */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+  }
+  .compare-table th {
+    background: var(--surface2);
+    padding: 14px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-bottom: 2px solid var(--border);
+  }
+  .compare-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+  .compare-table tr:hover td { background: var(--surface); }
+  .badge-old { color: var(--red); font-weight: 600; }
+  .badge-new { color: var(--green); font-weight: 600; }
+
+  /* Callout boxes */
+  .callout {
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin: 20px 0;
+    font-size: 0.92rem;
+  }
+  .callout-warn {
+    background: #2d2410;
+    border-left: 4px solid var(--yellow);
+  }
+  .callout-info {
+    background: #0f2338;
+    border-left: 4px solid var(--blue);
+  }
+  .callout-tip {
+    background: #0f2d1b;
+    border-left: 4px solid var(--green);
+  }
+  .callout strong { display: block; margin-bottom: 4px; }
+
+  /* Mental model grid */
+  .mental-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+  }
+  .mental-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .mental-card .icon {
+    font-size: 2rem;
+    margin-bottom: 12px;
+    display: block;
+  }
+  .mental-card h4 {
+    font-size: 1.05rem;
+    color: #c4b5fd;
+    margin-bottom: 8px;
+  }
+  .mental-card p {
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    margin: 0;
+  }
+
+  /* TOC */
+  .toc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 32px;
+    margin: 40px 0 0;
+  }
+  .toc h3 { margin: 0 0 16px; color: var(--text-dim); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; }
+  .toc ol { padding-left: 20px; }
+  .toc li {
+    margin: 6px 0;
+    color: var(--purple-light);
+    font-size: 0.95rem;
+  }
+  .toc a { color: var(--purple-light); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+
+  /* Layers diagram */
+  .layers {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin: 16px 0;
+  }
+  .layer {
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;
+    width: 100%;
+    max-width: 460px;
+  }
+  .layer-1 { background: #1e3a5f; color: var(--blue); border: 1px solid var(--blue); }
+  .layer-2 { background: #2a1f3d; color: var(--purple-light); border: 1px solid var(--purple-light); }
+  .layer-3 { background: #2d1f0e; color: var(--orange); border: 1px solid var(--orange); }
+  .layer-4 { background: #1a2e1a; color: var(--green); border: 1px solid var(--green); }
+  .layer-arrow { color: var(--text-dim); font-size: 1.2rem; }
+
+  /* Slice diagram */
+  .slice-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .slice-box {
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .slice-auth  { background: #1e293b; border: 2px solid var(--blue); color: var(--blue); }
+  .slice-user  { background: #1a2e1a; border: 2px solid var(--green); color: var(--green); }
+  .slice-notif { background: #2d1f0e; border: 2px solid var(--orange); color: var(--orange); }
+  .slice-lms   { background: #2a1f3d; border: 2px solid var(--purple-light); color: var(--purple-light); }
+  .slice-inner {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--text-dim);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  /* Async flow */
+  .async-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    margin: 16px 0;
+  }
+  .async-step {
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+  }
+  .step-dispatch { background: #3b1f2b; border: 1px solid var(--red); color: var(--red); }
+  .step-pending  { background: #2d2410; border: 1px solid var(--yellow); color: var(--yellow); }
+  .step-api      { background: #0f2338; border: 1px solid var(--blue); color: var(--blue); }
+  .step-fulfilled { background: #1a2e1a; border: 1px solid var(--green); color: var(--green); }
+  .step-rejected  { background: #3b1f2b; border: 1px solid var(--red); color: var(--red); }
+
+  .ts-badge {
+    display: inline-block;
+    background: #1e3a5f;
+    color: var(--blue);
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  .file-path {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+    font-family: monospace;
+  }
+
+  footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<header class="hero">
+  <h1>Redux & Redux Toolkit</h1>
+  <p class="subtitle">A complete mental-model guide — from core principles to production TypeScript patterns for your STS Mobile App.</p>
+  <div class="container">
+    <nav class="toc">
+      <h3>What You'll Learn</h3>
+      <ol>
+        <li><a href="#s1">The Problem Redux Solves</a></li>
+        <li><a href="#s2">Core Mental Model — The Data Flow Cycle</a></li>
+        <li><a href="#s3">Vanilla Redux (Concepts Only)</a></li>
+        <li><a href="#s4">Redux Toolkit (RTK) — The Modern Way</a></li>
+        <li><a href="#s5">TypeScript + RTK Deep Dive</a></li>
+        <li><a href="#s6">Async — createAsyncThunk</a></li>
+        <li><a href="#s7">RTK Query (Data Fetching)</a></li>
+        <li><a href="#s8">Connecting to React / React Native</a></li>
+        <li><a href="#s9">STS Project — State Architecture Blueprint</a></li>
+        <li><a href="#s10">Anti-Patterns & Best Practices</a></li>
+      </ol>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+
+<!-- ═══════════════════ 1 ═══════════════════ -->
+<section id="s1">
+  <h2><span class="num">01</span> The Problem Redux Solves</h2>
+
+  <p>Imagine your STS app. You have an <span class="inline-code">AuthScreen</span>, a <span class="inline-code">Dashboard</span>, a <span class="inline-code">RewardsModal</span>, and a <span class="inline-code">NotificationHandler</span>. All of them need access to the user's authentication state. Without a global store, you'd be doing one of two things:</p>
+
+  <div class="mental-grid">
+    <div class="mental-card">
+      <span class="icon">🪜</span>
+      <h4>Prop Drilling</h4>
+      <p>Passing <code>user</code>, <code>token</code>, <code>isLoggedIn</code> through 8 layers of components that don't even use them — they just relay them downward.</p>
+    </div>
+    <div class="mental-card">
+      <span class="icon">🍝</span>
+      <h4>Scattered Local State</h4>
+      <p>Each screen fetches its own copy of the user. Now they disagree. The Dashboard says you're logged in but RewardsModal says you're not.</p>
+    </div>
+  </div>
+
+  <p><strong>Redux gives you a single, centralized, predictable state container.</strong> Every component reads from one truth. Every change goes through one pipeline. You can debug, log, time-travel, and replay every state change that ever happened.</p>
+
+  <div class="callout callout-info">
+    <strong>Why this matters for STS specifically:</strong>
+    Your contract mentions the RewardsModal needing to "handle asynchronous state updates in React 18." This is exactly the kind of bug that a well-structured Redux store prevents — race conditions between local states.
+  </div>
+</section>
+
+<!-- ═══════════════════ 2 ═══════════════════ -->
+<section id="s2">
+  <h2><span class="num">02</span> Core Mental Model — The Data Flow Cycle</h2>
+
+  <p>Redux follows a <strong>strict unidirectional data flow</strong>. This is the single most important thing to internalize. Here's the cycle:</p>
+
+  <div class="diagram">
+    <div class="diagram-title">Redux Unidirectional Data Flow</div>
+    <div class="flow">
+      <div>
+        <div class="flow-node node-view">UI<br/>(Component)</div>
+        <span class="flow-label">Renders state</span>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div>
+        <div class="flow-node node-action">Action<br/>(Event)</div>
+        <span class="flow-label">dispatch()</span>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div>
+        <div class="flow-node node-middleware">Middleware</div>
+        <span class="flow-label">Intercepts (optional)</span>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div>
+        <div class="flow-node node-reducer">Reducer<br/>(Pure fn)</div>
+        <span class="flow-label">(state, action) → newState</span>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div>
+        <div class="flow-node node-store">Store<br/>(State Tree)</div>
+        <span class="flow-label">Single source of truth</span>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top: 16px;">
+      <span style="color: var(--text-dim); font-size: 0.85rem;">← The Store notifies the UI, which re-renders. Cycle complete. ←</span>
+    </div>
+  </div>
+
+  <p>Let's break each node down with a concrete analogy:</p>
+
+  <div class="mental-grid">
+    <div class="mental-card">
+      <span class="icon" style="color:var(--green)">🏦</span>
+      <h4>Store = Bank Vault</h4>
+      <p>Holds the entire state of your application. You never reach in and change it directly. You <em>submit requests</em> (actions).</p>
+    </div>
+    <div class="mental-card">
+      <span class="icon" style="color:var(--red)">📝</span>
+      <h4>Action = Deposit Slip</h4>
+      <p>A plain object: <code>{ type: "deposit", amount: 100 }</code>. It describes <strong>what happened</strong>, not <em>how</em> to change state.</p>
+    </div>
+    <div class="mental-card">
+      <span class="icon" style="color:var(--orange)">🧑‍💼</span>
+      <h4>Reducer = Bank Teller</h4>
+      <p>A pure function that reads the slip, looks at the current balance, and produces the new balance. Never mutates — always returns a new copy.</p>
+    </div>
+    <div class="mental-card">
+      <span class="icon" style="color:var(--blue)">📺</span>
+      <h4>UI = Account Statement</h4>
+      <p>Subscribes to the store. Whenever state changes, it re-renders with the latest values.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-warn">
+    <strong>Key Rule: Reducers must be pure functions.</strong>
+    Given the same input (state + action), they must always return the same output. No API calls, no <code>Date.now()</code>, no randomness inside a reducer.
+  </div>
+</section>
+
+<!-- ═══════════════════ 3 ═══════════════════ -->
+<section id="s3">
+  <h2><span class="num">03</span> Vanilla Redux (Concepts Only)</h2>
+
+  <p>You'll never write vanilla Redux in production anymore — RTK replaced it. But understanding the raw concepts helps you understand <em>why</em> RTK exists and what it abstracts away.</p>
+
+  <h3>3.1 — Creating a Store (the old way)</h3>
+<pre>
+<span class="cmt">// Vanilla Redux — DO NOT use in production</span>
+<span class="kw">import</span> { createStore } <span class="kw">from</span> <span class="str">'redux'</span>;
+
+<span class="cmt">// 1. Define the initial state</span>
+<span class="kw">const</span> initialState = { balance: <span class="num-lit">0</span>, transactions: [] };
+
+<span class="cmt">// 2. Write a reducer</span>
+<span class="kw">function</span> <span class="fn">bankReducer</span>(state = initialState, action) {
+  <span class="kw">switch</span> (action.type) {
+    <span class="kw">case</span> <span class="str">'deposit'</span>:
+      <span class="kw">return</span> {
+        ...state,                          <span class="cmt">// copy everything</span>
+        balance: state.balance + action.payload,  <span class="cmt">// update balance</span>
+        transactions: [...state.transactions, action], <span class="cmt">// append</span>
+      };
+    <span class="kw">case</span> <span class="str">'withdraw'</span>:
+      <span class="kw">return</span> {
+        ...state,
+        balance: state.balance - action.payload,
+        transactions: [...state.transactions, action],
+      };
+    <span class="kw">default</span>:
+      <span class="kw">return</span> state;
+  }
+}
+
+<span class="cmt">// 3. Create the store</span>
+<span class="kw">const</span> store = <span class="fn">createStore</span>(bankReducer);
+
+<span class="cmt">// 4. Dispatch actions</span>
+store.<span class="fn">dispatch</span>({ type: <span class="str">'deposit'</span>, payload: <span class="num-lit">100</span> });
+store.<span class="fn">dispatch</span>({ type: <span class="str">'withdraw'</span>, payload: <span class="num-lit">30</span> });
+
+console.log(store.<span class="fn">getState</span>()); <span class="cmt">// { balance: 70, transactions: [...] }</span>
+</pre>
+
+  <h3>3.2 — Pain Points of Vanilla Redux</h3>
+  <table class="compare-table">
+    <thead>
+      <tr><th>Pain Point</th><th>What Goes Wrong</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Boilerplate</td><td>Action type constants + action creators + reducer switch cases for <em>every</em> action</td></tr>
+      <tr><td>Immutability by hand</td><td>Nested spreads: <code>{...state, user: {...state.user, name: 'new'}}</code> — error-prone</td></tr>
+      <tr><td>No built-in async</td><td>Need to manually add redux-thunk or redux-saga middleware</td></tr>
+      <tr><td>No structure</td><td>No opinion on file layout, naming, or patterns — every team invents their own</td></tr>
+      <tr><td>No TypeScript help</td><td>String-based action types = zero type safety</td></tr>
+    </tbody>
+  </table>
+
+  <p>This is exactly why <strong>Redux Toolkit</strong> exists. It's not a different library — it IS Redux, with all the sharp edges filed off.</p>
+</section>
+
+<!-- ═══════════════════ 4 ═══════════════════ -->
+<section id="s4">
+  <h2><span class="num">04</span> Redux Toolkit (RTK) — The Modern Way</h2>
+
+  <p>RTK is the official, recommended way to write Redux. It wraps <strong>Immer</strong> (for safe "mutations"), auto-generates action creators, and bundles the middleware you need.</p>
+
+  <div class="diagram">
+    <div class="diagram-title">What RTK Gives You Out of the Box</div>
+    <div class="layers">
+      <div class="layer layer-1">🔧 configureStore() — Creates the store + dev tools + thunk middleware</div>
+      <div class="layer-arrow">↓</div>
+      <div class="layer layer-2">🍰 createSlice() — Reducer + Actions auto-generated from one definition</div>
+      <div class="layer-arrow">↓</div>
+      <div class="layer layer-3">⚡ createAsyncThunk() — Async actions with pending/fulfilled/rejected lifecycle</div>
+      <div class="layer-arrow">↓</div>
+      <div class="layer layer-4">🌐 RTK Query — Full data-fetching & caching layer (optional)</div>
+    </div>
+  </div>
+
+  <h3>4.1 — createSlice: The Core Building Block <span class="ts-badge">TS</span></h3>
+
+  <p>A <strong>slice</strong> is a self-contained piece of Redux logic for one feature. It defines the initial state, the reducers, and auto-generates the action creators and action types. This is where you'll spend most of your Redux time.</p>
+
+  <div class="file-path">📁 src/store/slices/authSlice.ts</div>
+<pre>
+<span class="kw">import</span> { createSlice, <span class="type">PayloadAction</span> } <span class="kw">from</span> <span class="str">'@reduxjs/toolkit'</span>;
+
+<span class="cmt">// ── 1. Define the shape of this slice's state ──</span>
+<span class="kw">interface</span> <span class="type">AuthState</span> {
+  user: { id: <span class="type">string</span>; name: <span class="type">string</span>; email: <span class="type">string</span> } | <span class="type">null</span>;
+  token: <span class="type">string</span> | <span class="type">null</span>;
+  isAuthenticated: <span class="type">boolean</span>;
+  loading: <span class="type">boolean</span>;
+}
+
+<span class="cmt">// ── 2. Define the initial state ──</span>
+<span class="kw">const</span> initialState: <span class="type">AuthState</span> = {
+  user: <span class="num-lit">null</span>,
+  token: <span class="num-lit">null</span>,
+  isAuthenticated: <span class="num-lit">false</span>,
+  loading: <span class="num-lit">false</span>,
+};
+
+<span class="cmt">// ── 3. Create the slice ──</span>
+<span class="kw">const</span> authSlice = <span class="fn">createSlice</span>({
+  name: <span class="str">'auth'</span>,               <span class="cmt">// Prefix for action types → "auth/login"</span>
+  initialState,
+  reducers: {
+    <span class="cmt">// Each key here becomes an action creator AND a case reducer</span>
+
+    <span class="fn">login</span>(state, action: <span class="type">PayloadAction</span>&lt;{ user: <span class="type">AuthState</span>[<span class="str">'user'</span>]; token: <span class="type">string</span> }&gt;) {
+      <span class="cmt">// ✅ You CAN "mutate" state here — Immer handles immutability under the hood</span>
+      state.user = action.payload.user;
+      state.token = action.payload.token;
+      state.isAuthenticated = <span class="num-lit">true</span>;
+    },
+
+    <span class="fn">logout</span>(state) {
+      state.user = <span class="num-lit">null</span>;
+      state.token = <span class="num-lit">null</span>;
+      state.isAuthenticated = <span class="num-lit">false</span>;
+    },
+
+    <span class="fn">setLoading</span>(state, action: <span class="type">PayloadAction</span>&lt;<span class="type">boolean</span>&gt;) {
+      state.loading = action.payload;
+    },
+  },
+});
+
+<span class="cmt">// ── 4. Export the auto-generated action creators ──</span>
+<span class="kw">export const</span> { login, logout, setLoading } = authSlice.actions;
+
+<span class="cmt">// ── 5. Export the reducer (will be plugged into the store) ──</span>
+<span class="kw">export default</span> authSlice.reducer;
+</pre>
+
+  <div class="callout callout-tip">
+    <strong>The Immer Magic:</strong>
+    Inside <code>createSlice</code> reducers, you write code that <em>looks</em> like mutation: <code>state.user = newUser</code>. But Immer intercepts this and produces a proper immutable update behind the scenes. You get the readability of mutation with the safety of immutability. This is NOT mutation — it's syntactic sugar over <code>{...state, user: newUser}</code>.
+  </div>
+
+  <h3>4.2 — What createSlice Auto-Generates</h3>
+
+  <p>When you wrote the <span class="inline-code">login</span> reducer above, RTK automatically created:</p>
+
+<pre>
+<span class="cmt">// The action creator function:</span>
+authSlice.actions.<span class="fn">login</span>({
+  user: { id: <span class="str">'1'</span>, name: <span class="str">'John'</span>, email: <span class="str">'j@stsapp.com'</span> },
+  token: <span class="str">'abc123'</span>
+})
+
+<span class="cmt">// Produces this action object:</span>
+{
+  type: <span class="str">"auth/login"</span>,          <span class="cmt">// sliceName/reducerName</span>
+  payload: {
+    user: { id: <span class="str">'1'</span>, name: <span class="str">'John'</span>, email: <span class="str">'j@stsapp.com'</span> },
+    token: <span class="str">'abc123'</span>
+  }
+}
+</pre>
+
+  <p>No more separate action type constants. No more separate action creator files. The slice <em>is</em> the single source of truth for that feature's logic.</p>
+
+  <h3>4.3 — configureStore: Wiring It All Together <span class="ts-badge">TS</span></h3>
+
+  <div class="file-path">📁 src/store/index.ts</div>
+<pre>
+<span class="kw">import</span> { configureStore } <span class="kw">from</span> <span class="str">'@reduxjs/toolkit'</span>;
+<span class="kw">import</span> authReducer <span class="kw">from</span> <span class="str">'./slices/authSlice'</span>;
+<span class="kw">import</span> rewardsReducer <span class="kw">from</span> <span class="str">'./slices/rewardsSlice'</span>;
+<span class="kw">import</span> notificationsReducer <span class="kw">from</span> <span class="str">'./slices/notificationsSlice'</span>;
+
+<span class="kw">export const</span> store = <span class="fn">configureStore</span>({
+  reducer: {
+    <span class="cmt">// Each key here becomes a top-level key in your state tree</span>
+    auth: authReducer,              <span class="cmt">// state.auth</span>
+    rewards: rewardsReducer,        <span class="cmt">// state.rewards</span>
+    notifications: notificationsReducer, <span class="cmt">// state.notifications</span>
+  },
+  <span class="cmt">// configureStore auto-adds:</span>
+  <span class="cmt">//   - redux-thunk middleware (for async)</span>
+  <span class="cmt">//   - Redux DevTools Extension connection</span>
+  <span class="cmt">//   - Serialization check middleware (dev only)</span>
+  <span class="cmt">//   - Immutability check middleware (dev only)</span>
+});
+
+<span class="cmt">// ── Infer types directly from the store ──</span>
+<span class="kw">export type</span> <span class="type">RootState</span> = ReturnType&lt;<span class="kw">typeof</span> store.getState&gt;;
+<span class="kw">export type</span> <span class="type">AppDispatch</span> = <span class="kw">typeof</span> store.dispatch;
+</pre>
+
+  <div class="callout callout-info">
+    <strong>Why <code>RootState</code> and <code>AppDispatch</code>?</strong>
+    These two types are the backbone of TypeScript Redux. <code>RootState</code> represents the entire state tree shape. <code>AppDispatch</code> includes thunk-aware dispatch. You define them once and use them everywhere.
+  </div>
+</section>
+
+<!-- ═══════════════════ 5 ═══════════════════ -->
+<section id="s5">
+  <h2><span class="num">05</span> TypeScript + RTK Deep Dive <span class="ts-badge">TS</span></h2>
+
+  <h3>5.1 — Typed Hooks (Critical for React Native)</h3>
+
+  <p>Instead of using raw <span class="inline-code">useSelector</span> and <span class="inline-code">useDispatch</span>, you create pre-typed versions. This is a <strong>one-time setup</strong> that gives you autocomplete everywhere.</p>
+
+  <div class="file-path">📁 src/store/hooks.ts</div>
+<pre>
+<span class="kw">import</span> { useDispatch, useSelector } <span class="kw">from</span> <span class="str">'react-redux'</span>;
+<span class="kw">import type</span> { <span class="type">RootState</span>, <span class="type">AppDispatch</span> } <span class="kw">from</span> <span class="str">'./index'</span>;
+
+<span class="cmt">// ✅ Use these throughout your app instead of plain useDispatch/useSelector</span>
+<span class="kw">export const</span> <span class="fn">useAppDispatch</span> = useDispatch.<span class="fn">withTypes</span>&lt;<span class="type">AppDispatch</span>&gt;();
+<span class="kw">export const</span> <span class="fn">useAppSelector</span> = useSelector.<span class="fn">withTypes</span>&lt;<span class="type">RootState</span>&gt;();
+</pre>
+
+  <h3>5.2 — Usage in a Component</h3>
+<pre>
+<span class="kw">import</span> React <span class="kw">from</span> <span class="str">'react'</span>;
+<span class="kw">import</span> { View, Text, TouchableOpacity } <span class="kw">from</span> <span class="str">'react-native'</span>;
+<span class="kw">import</span> { useAppSelector, useAppDispatch } <span class="kw">from</span> <span class="str">'../store/hooks'</span>;
+<span class="kw">import</span> { logout } <span class="kw">from</span> <span class="str">'../store/slices/authSlice'</span>;
+
+<span class="kw">const</span> <span class="fn">ProfileHeader</span> = () => {
+  <span class="kw">const</span> dispatch = <span class="fn">useAppDispatch</span>();
+
+  <span class="cmt">// ✅ Full autocomplete: state.auth.user.name</span>
+  <span class="cmt">// TypeScript knows the exact shape of your state tree</span>
+  <span class="kw">const</span> user = <span class="fn">useAppSelector</span>((state) => state.auth.user);
+  <span class="kw">const</span> isAuthenticated = <span class="fn">useAppSelector</span>((state) => state.auth.isAuthenticated);
+
+  <span class="kw">if</span> (!isAuthenticated || !user) <span class="kw">return null</span>;
+
+  <span class="kw">return</span> (
+    &lt;View&gt;
+      &lt;Text&gt;Welcome, {user.name}&lt;/Text&gt;
+      &lt;TouchableOpacity onPress={() => dispatch(<span class="fn">logout</span>())}&gt;
+        &lt;Text&gt;Log Out&lt;/Text&gt;
+      &lt;/TouchableOpacity&gt;
+    &lt;/View&gt;
+  );
+};
+</pre>
+
+  <h3>5.3 — PayloadAction: Typing Your Payloads</h3>
+
+  <p><span class="inline-code">PayloadAction&lt;T&gt;</span> is the generic type that tells TypeScript what shape <span class="inline-code">action.payload</span> will be:</p>
+
+<pre>
+<span class="kw">import</span> { createSlice, <span class="type">PayloadAction</span> } <span class="kw">from</span> <span class="str">'@reduxjs/toolkit'</span>;
+
+<span class="kw">interface</span> <span class="type">Reward</span> {
+  id: <span class="type">string</span>;
+  name: <span class="type">string</span>;
+  points: <span class="type">number</span>;
+  redeemedAt: <span class="type">string</span> | <span class="type">null</span>;
+}
+
+<span class="kw">interface</span> <span class="type">RewardsState</span> {
+  items: <span class="type">Reward</span>[];
+  totalPoints: <span class="type">number</span>;
+}
+
+<span class="kw">const</span> rewardsSlice = <span class="fn">createSlice</span>({
+  name: <span class="str">'rewards'</span>,
+  initialState: { items: [], totalPoints: <span class="num-lit">0</span> } <span class="kw">as</span> <span class="type">RewardsState</span>,
+  reducers: {
+    <span class="cmt">// PayloadAction&lt;Reward&gt; means action.payload IS a Reward</span>
+    <span class="fn">addReward</span>(state, action: <span class="type">PayloadAction</span>&lt;<span class="type">Reward</span>&gt;) {
+      state.items.<span class="fn">push</span>(action.payload);           <span class="cmt">// Immer-safe "mutation"</span>
+      state.totalPoints += action.payload.points;
+    },
+
+    <span class="cmt">// PayloadAction&lt;string&gt; means action.payload is just a reward ID</span>
+    <span class="fn">redeemReward</span>(state, action: <span class="type">PayloadAction</span>&lt;<span class="type">string</span>&gt;) {
+      <span class="kw">const</span> reward = state.items.<span class="fn">find</span>((r) => r.id === action.payload);
+      <span class="kw">if</span> (reward) {
+        reward.redeemedAt = <span class="kw">new</span> Date().<span class="fn">toISOString</span>();
+      }
+    },
+
+    <span class="cmt">// No payload needed</span>
+    <span class="fn">clearRewards</span>(state) {
+      state.items = [];
+      state.totalPoints = <span class="num-lit">0</span>;
+    },
+  },
+});
+</pre>
+</section>
+
+<!-- ═══════════════════ 6 ═══════════════════ -->
+<section id="s6">
+  <h2><span class="num">06</span> Async — createAsyncThunk <span class="ts-badge">TS</span></h2>
+
+  <p>Reducers must be pure. So how do you handle API calls? <strong>Thunks.</strong> A thunk is a function that dispatches actions over time — before the call, on success, and on failure.</p>
+
+  <div class="diagram">
+    <div class="diagram-title">createAsyncThunk Lifecycle</div>
+    <div class="async-flow">
+      <div class="async-step step-dispatch">dispatch(fetchUser('userId123'))</div>
+      <div class="layer-arrow">↓</div>
+      <div class="async-step step-pending">🟡 fetchUser.pending — "loading: true"</div>
+      <div class="layer-arrow">↓</div>
+      <div class="async-step step-api">🔵 API Call → await fetch('/api/user/userId123')</div>
+      <div style="display:flex; gap: 32px; width: 100%; max-width:400px; justify-content:center;">
+        <div style="text-align:center;">
+          <div class="layer-arrow">↓</div>
+          <div class="async-step step-fulfilled" style="font-size:0.8rem;">✅ fetchUser.fulfilled<br/>"loading: false, data: {...}"</div>
+        </div>
+        <div style="text-align:center;">
+          <div class="layer-arrow">↓</div>
+          <div class="async-step step-rejected" style="font-size:0.8rem;">❌ fetchUser.rejected<br/>"loading: false, error: '...'"</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>6.1 — Creating an Async Thunk</h3>
+
+  <div class="file-path">📁 src/store/thunks/authThunks.ts</div>
+<pre>
+<span class="kw">import</span> { createAsyncThunk } <span class="kw">from</span> <span class="str">'@reduxjs/toolkit'</span>;
+
+<span class="cmt">// ── Define the return type and the argument type ──</span>
+<span class="cmt">//    createAsyncThunk&lt;ReturnType, ArgType&gt;</span>
+<span class="kw">interface</span> <span class="type">LoginResponse</span> {
+  user: { id: <span class="type">string</span>; name: <span class="type">string</span>; email: <span class="type">string</span> };
+  token: <span class="type">string</span>;
+}
+
+<span class="kw">interface</span> <span class="type">LoginCredentials</span> {
+  email: <span class="type">string</span>;
+  password: <span class="type">string</span>;
+}
+
+<span class="kw">export const</span> loginUser = <span class="fn">createAsyncThunk</span>&lt;<span class="type">LoginResponse</span>, <span class="type">LoginCredentials</span>&gt;(
+  <span class="str">'auth/loginUser'</span>,    <span class="cmt">// action type prefix</span>
+  <span class="kw">async</span> (credentials, { rejectWithValue }) => {
+    <span class="kw">try</span> {
+      <span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'https://api.stsapp.com/auth/login'</span>, {
+        method: <span class="str">'POST'</span>,
+        headers: { <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
+        body: JSON.<span class="fn">stringify</span>(credentials),
+      });
+
+      <span class="kw">if</span> (!response.ok) {
+        <span class="kw">const</span> error = <span class="kw">await</span> response.<span class="fn">json</span>();
+        <span class="kw">return</span> <span class="fn">rejectWithValue</span>(error.message);
+      }
+
+      <span class="kw">return</span> (<span class="kw">await</span> response.<span class="fn">json</span>()) <span class="kw">as</span> <span class="type">LoginResponse</span>;
+    } <span class="kw">catch</span> (err) {
+      <span class="kw">return</span> <span class="fn">rejectWithValue</span>(<span class="str">'Network error'</span>);
+    }
+  }
+);
+</pre>
+
+  <h3>6.2 — Handling Thunk in the Slice with extraReducers</h3>
+
+  <p>The thunk generates 3 action types automatically. You handle them in <span class="inline-code">extraReducers</span>:</p>
+
+<pre>
+<span class="kw">import</span> { loginUser } <span class="kw">from</span> <span class="str">'../thunks/authThunks'</span>;
+
+<span class="kw">const</span> authSlice = <span class="fn">createSlice</span>({
+  name: <span class="str">'auth'</span>,
+  initialState,
+  reducers: {
+    logout(state) {
+      state.user = <span class="num-lit">null</span>;
+      state.token = <span class="num-lit">null</span>;
+      state.isAuthenticated = <span class="num-lit">false</span>;
+      state.error = <span class="num-lit">null</span>;
+    },
+  },
+  <span class="cmt">// extraReducers handles actions DEFINED OUTSIDE this slice</span>
+  extraReducers: (builder) => {
+    builder
+      .<span class="fn">addCase</span>(loginUser.pending, (state) => {
+        state.loading = <span class="num-lit">true</span>;
+        state.error = <span class="num-lit">null</span>;
+      })
+      .<span class="fn">addCase</span>(loginUser.fulfilled, (state, action) => {
+        <span class="cmt">// action.payload is typed as LoginResponse automatically</span>
+        state.loading = <span class="num-lit">false</span>;
+        state.user = action.payload.user;
+        state.token = action.payload.token;
+        state.isAuthenticated = <span class="num-lit">true</span>;
+      })
+      .<span class="fn">addCase</span>(loginUser.rejected, (state, action) => {
+        state.loading = <span class="num-lit">false</span>;
+        state.error = action.payload <span class="kw">as</span> <span class="type">string</span>;  <span class="cmt">// from rejectWithValue</span>
+      });
+  },
+});
+</pre>
+
+  <div class="callout callout-tip">
+    <strong>reducers vs. extraReducers:</strong>
+    <code>reducers</code> — for actions this slice <em>owns</em> and defines. RTK auto-generates action creators for these.<br/>
+    <code>extraReducers</code> — for actions defined <em>elsewhere</em> (thunks, other slices). No action creators are generated.
+  </div>
+</section>
+
+<!-- ═══════════════════ 7 ═══════════════════ -->
+<section id="s7">
+  <h2><span class="num">07</span> RTK Query (Data Fetching & Caching) <span class="ts-badge">TS</span></h2>
+
+  <p>RTK Query eliminates boilerplate for data fetching. Instead of writing thunks + loading states + cache invalidation by hand, you define an API and RTK Query generates hooks, caching, and refetching logic for you.</p>
+
+  <div class="file-path">📁 src/store/api/stsApi.ts</div>
+<pre>
+<span class="kw">import</span> { createApi, fetchBaseQuery } <span class="kw">from</span> <span class="str">'@reduxjs/toolkit/query/react'</span>;
+<span class="kw">import type</span> { <span class="type">RootState</span> } <span class="kw">from</span> <span class="str">'../index'</span>;
+
+<span class="kw">interface</span> <span class="type">Challenge</span> {
+  id: <span class="type">string</span>;
+  title: <span class="type">string</span>;
+  videoUrl: <span class="type">string</span>;
+  completed: <span class="type">boolean</span>;
+}
+
+<span class="kw">export const</span> stsApi = <span class="fn">createApi</span>({
+  reducerPath: <span class="str">'stsApi'</span>,
+  baseQuery: <span class="fn">fetchBaseQuery</span>({
+    baseUrl: <span class="str">'https://api.stsapp.com'</span>,
+    <span class="cmt">// Auto-attach the auth token to every request</span>
+    prepareHeaders: (headers, { getState }) => {
+      <span class="kw">const</span> token = (getState() <span class="kw">as</span> <span class="type">RootState</span>).auth.token;
+      <span class="kw">if</span> (token) headers.<span class="fn">set</span>(<span class="str">'Authorization'</span>, <span class="str">`Bearer ${token}`</span>);
+      <span class="kw">return</span> headers;
+    },
+  }),
+  tagTypes: [<span class="str">'Challenges'</span>, <span class="str">'Rewards'</span>],    <span class="cmt">// For cache invalidation</span>
+  endpoints: (builder) => ({
+    <span class="cmt">// GET /challenges</span>
+    getChallenges: builder.<span class="fn">query</span>&lt;<span class="type">Challenge</span>[], <span class="type">void</span>&gt;({
+      query: () => <span class="str">'/challenges'</span>,
+      providesTags: [<span class="str">'Challenges'</span>],
+    }),
+
+    <span class="cmt">// POST /challenges/:id/complete</span>
+    completeChallenge: builder.<span class="fn">mutation</span>&lt;<span class="type">Challenge</span>, <span class="type">string</span>&gt;({
+      query: (id) => ({
+        url: <span class="str">`/challenges/${id}/complete`</span>,
+        method: <span class="str">'POST'</span>,
+      }),
+      invalidatesTags: [<span class="str">'Challenges'</span>],   <span class="cmt">// Auto-refetches the list</span>
+    }),
+  }),
+});
+
+<span class="cmt">// ✅ Auto-generated hooks!</span>
+<span class="kw">export const</span> {
+  useGetChallengesQuery,
+  useCompleteChallengeMutation,
+} = stsApi;
+</pre>
+
+  <p>Usage in a component is then just:</p>
+<pre>
+<span class="kw">const</span> <span class="fn">ChallengeList</span> = () => {
+  <span class="kw">const</span> { data: challenges, isLoading, error } = <span class="fn">useGetChallengesQuery</span>();
+  <span class="kw">const</span> [completeChallenge] = <span class="fn">useCompleteChallengeMutation</span>();
+
+  <span class="kw">if</span> (isLoading) <span class="kw">return</span> &lt;ActivityIndicator /&gt;;
+  <span class="kw">if</span> (error) <span class="kw">return</span> &lt;Text&gt;Error loading challenges&lt;/Text&gt;;
+
+  <span class="kw">return</span> (
+    &lt;FlatList
+      data={challenges}
+      renderItem={({ item }) =&gt; (
+        &lt;TouchableOpacity onPress={() =&gt; <span class="fn">completeChallenge</span>(item.id)}&gt;
+          &lt;Text&gt;{item.title}&lt;/Text&gt;
+        &lt;/TouchableOpacity&gt;
+      )}
+    /&gt;
+  );
+};
+</pre>
+</section>
+
+<!-- ═══════════════════ 8 ═══════════════════ -->
+<section id="s8">
+  <h2><span class="num">08</span> Connecting to React / React Native</h2>
+
+  <p>The <span class="inline-code">react-redux</span> library provides the <span class="inline-code">&lt;Provider&gt;</span> component that injects the store into the React component tree via context:</p>
+
+  <div class="file-path">📁 App.tsx (or index.tsx)</div>
+<pre>
+<span class="kw">import</span> React <span class="kw">from</span> <span class="str">'react'</span>;
+<span class="kw">import</span> { Provider } <span class="kw">from</span> <span class="str">'react-redux'</span>;
+<span class="kw">import</span> { store } <span class="kw">from</span> <span class="str">'./store'</span>;
+<span class="kw">import</span> { AppNavigator } <span class="kw">from</span> <span class="str">'./navigation/AppNavigator'</span>;
+
+<span class="kw">const</span> <span class="fn">App</span> = () => (
+  <span class="cmt">{/* Every component below can useAppSelector / useAppDispatch */}</span>
+  &lt;<span class="fn">Provider</span> store={store}&gt;
+    &lt;<span class="fn">AppNavigator</span> /&gt;
+  &lt;/<span class="fn">Provider</span>&gt;
+);
+
+<span class="kw">export default</span> App;
+</pre>
+
+  <div class="diagram">
+    <div class="diagram-title">Provider → Store → Components Relationship</div>
+    <div class="layers">
+      <div class="layer layer-4">&lt;Provider store={store}&gt; — wraps entire app</div>
+      <div class="layer-arrow">↓ provides store via React Context</div>
+      <div class="layer layer-1">&lt;AppNavigator&gt; → Screens → Components</div>
+      <div class="layer-arrow">↓ components use hooks to read/write</div>
+      <div class="layer layer-2">useAppSelector(state => state.auth.user) — reads</div>
+      <div class="layer layer-3">useAppDispatch() → dispatch(login({...})) — writes</div>
+    </div>
+  </div>
+
+  <h3>8.1 — Selectors: Reading State Efficiently</h3>
+
+  <p>A <strong>selector</strong> is a function that extracts a specific piece of state. Defining them alongside your slice keeps logic co-located and reusable:</p>
+
+  <div class="file-path">📁 src/store/slices/authSlice.ts (bottom of file)</div>
+<pre>
+<span class="cmt">// ── Selectors ──</span>
+<span class="kw">export const</span> <span class="fn">selectCurrentUser</span> = (state: <span class="type">RootState</span>) => state.auth.user;
+<span class="kw">export const</span> <span class="fn">selectIsAuthenticated</span> = (state: <span class="type">RootState</span>) => state.auth.isAuthenticated;
+<span class="kw">export const</span> <span class="fn">selectAuthLoading</span> = (state: <span class="type">RootState</span>) => state.auth.loading;
+
+<span class="cmt">// ── Derived selector (computed value) ──</span>
+<span class="kw">export const</span> <span class="fn">selectUserDisplayName</span> = (state: <span class="type">RootState</span>) =>
+  state.auth.user?.name ?? <span class="str">'Guest'</span>;
+</pre>
+
+  <p>Then in any component:</p>
+<pre>
+<span class="kw">const</span> displayName = <span class="fn">useAppSelector</span>(selectUserDisplayName); <span class="cmt">// "John" or "Guest"</span>
+</pre>
+</section>
+
+<!-- ═══════════════════ 9 ═══════════════════ -->
+<section id="s9">
+  <h2><span class="num">09</span> STS Project — State Architecture Blueprint</h2>
+
+  <p>Based on the contract scope, here's how your global state should be sliced for the STS app:</p>
+
+  <div class="diagram">
+    <div class="diagram-title">configureStore — State Tree</div>
+    <div class="slice-container">
+      <div class="slice-box slice-auth">
+        🔐 auth
+        <div class="slice-inner">user, token, isAuthenticated,<br/>loading, mfaStatus</div>
+      </div>
+      <div class="slice-box slice-user">
+        👤 userProfile
+        <div class="slice-inner">preferences, attributionQuery,<br/>"How did you find us?"</div>
+      </div>
+      <div class="slice-box slice-notif">
+        🔔 notifications
+        <div class="slice-inner">permissions, scheduledNotifs,<br/>Notifee triggers, badge count</div>
+      </div>
+      <div class="slice-box slice-lms">
+        🎓 lms
+        <div class="slice-inner">challenges, videoProgress,<br/>answerValidation, 80% rule</div>
+      </div>
+    </div>
+    <div class="slice-container" style="margin-top:12px;">
+      <div class="slice-box" style="background:#1e1a2e; border:2px solid #a78bfa; color:#a78bfa;">
+        🎁 rewards
+        <div class="slice-inner">RewardsModal state,<br/>points, redeemed items</div>
+      </div>
+      <div class="slice-box" style="background:#1a2936; border:2px solid var(--cyan); color:var(--cyan);">
+        🔍 dashboard
+        <div class="slice-inner">searchQuery, locationFilter,<br/>filteredResults</div>
+      </div>
+      <div class="slice-box" style="background:#2d2410; border:2px solid var(--yellow); color:var(--yellow);">
+        ⚙️ app
+        <div class="slice-inner">appReady, firstLaunch,<br/>"Free First Step" CTA state</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>File Structure</h3>
+<pre>
+src/
+├── store/
+│   ├── index.ts              <span class="cmt">← configureStore + RootState + AppDispatch</span>
+│   ├── hooks.ts              <span class="cmt">← useAppSelector + useAppDispatch</span>
+│   ├── slices/
+│   │   ├── authSlice.ts
+│   │   ├── userProfileSlice.ts
+│   │   ├── notificationsSlice.ts
+│   │   ├── lmsSlice.ts
+│   │   ├── rewardsSlice.ts
+│   │   ├── dashboardSlice.ts
+│   │   └── appSlice.ts
+│   ├── thunks/
+│   │   ├── authThunks.ts     <span class="cmt">← loginUser, refreshToken</span>
+│   │   ├── lmsThunks.ts      <span class="cmt">← fetchChallenges, submitAnswer</span>
+│   │   └── notifThunks.ts    <span class="cmt">← requestPermissions, scheduleNotif</span>
+│   └── api/                  <span class="cmt">← (optional) RTK Query endpoints</span>
+│       └── stsApi.ts
+</pre>
+</section>
+
+<!-- ═══════════════════ 10 ═══════════════════ -->
+<section id="s10">
+  <h2><span class="num">10</span> Anti-Patterns & Best Practices</h2>
+
+  <table class="compare-table">
+    <thead>
+      <tr><th style="width:50%"><span class="badge-old">❌ Don't</span></th><th><span class="badge-new">✅ Do</span></th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Put everything in Redux (form inputs, UI toggles, ephemeral state)</td>
+        <td>Only global/shared state goes in Redux. Use <code>useState</code> for local UI state</td>
+      </tr>
+      <tr>
+        <td>Mutate state outside of <code>createSlice</code> reducers</td>
+        <td>Only "mutate" inside <code>createSlice</code> reducers where Immer is active</td>
+      </tr>
+      <tr>
+        <td>Store non-serializable values (class instances, functions, Promises)</td>
+        <td>Only store plain objects, arrays, primitives, and strings in Redux</td>
+      </tr>
+      <tr>
+        <td>Derive data inside components: <code>items.filter(...)</code> every render</td>
+        <td>Use memoized selectors with <code>createSelector</code> from RTK</td>
+      </tr>
+      <tr>
+        <td>Use raw <code>useSelector</code> / <code>useDispatch</code></td>
+        <td>Use pre-typed <code>useAppSelector</code> / <code>useAppDispatch</code></td>
+      </tr>
+      <tr>
+        <td>Write API logic with hand-rolled thunks + loading + error state</td>
+        <td>Use RTK Query for data fetching unless you have a strong reason not to</td>
+      </tr>
+      <tr>
+        <td>One giant reducer file with 40 cases</td>
+        <td>One slice per feature. Each slice owns its state domain.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Memoized Selectors with createSelector</h3>
+
+  <p>If you derive computed data from the store, <span class="inline-code">createSelector</span> prevents re-computation unless inputs change:</p>
+
+<pre>
+<span class="kw">import</span> { createSelector } <span class="kw">from</span> <span class="str">'@reduxjs/toolkit'</span>;
+
+<span class="kw">const</span> selectAllRewards = (state: <span class="type">RootState</span>) => state.rewards.items;
+
+<span class="cmt">// Only re-computes when state.rewards.items reference changes</span>
+<span class="kw">export const</span> selectUnredeemedRewards = <span class="fn">createSelector</span>(
+  [selectAllRewards],
+  (items) => items.<span class="fn">filter</span>((r) => r.redeemedAt === <span class="num-lit">null</span>)
+);
+
+<span class="cmt">// Usage:</span>
+<span class="kw">const</span> available = <span class="fn">useAppSelector</span>(selectUnredeemedRewards);
+</pre>
+
+  <div class="callout callout-warn">
+    <strong>React 18 + Redux: Why this matters for STS</strong>
+    React 18 batches state updates. If you're mixing local <code>useState</code> with Redux dispatch, the order of re-renders is no longer guaranteed the way it was in React 17. The RewardsModal bug in your contract is almost certainly a case of this. By putting the modal's critical state in Redux (rather than local state), you get predictable, atomic updates. One dispatch → one state change → one re-render.
+  </div>
+
+</section>
+
+</main>
+
+<footer>
+  Built for the STS Mobile App Modernization Project — Redux Toolkit with TypeScript
+</footer>
+
+</body>
+</html>
