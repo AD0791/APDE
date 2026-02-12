@@ -12,6 +12,7 @@
 3. [tsconfig.json — Controlling the Compiler](#3-tsconfigjson--controlling-the-compiler)
 
 **Part II — The Type System (From Atoms to Molecules)**
+
 4. [Primitive Types — The Atoms](#4-primitive-types--the-atoms)
 5. [Object Types — Shapes of Data](#5-object-types--shapes-of-data)
 6. [Union & Intersection — Combining Types](#6-union--intersection--combining-types)
@@ -20,11 +21,13 @@
 9. [Enums vs Union Literals](#9-enums-vs-union-literals)
 
 **Part III — Generics (The Power Tool)**
+
 10. [Generics — Types That Take Parameters](#10-generics--types-that-take-parameters)
 11. [Generic Constraints — Bounding the Unknown](#11-generic-constraints--bounding-the-unknown)
 12. [Generic Inference — Let the Compiler Do the Work](#12-generic-inference--let-the-compiler-do-the-work)
 
 **Part IV — Advanced Type System**
+
 13. [Conditional Types — if/else for Types](#13-conditional-types--ifelse-for-types)
 14. [Mapped Types — Transform Every Property](#14-mapped-types--transform-every-property)
 15. [Template Literal Types — String Manipulation at Type Level](#15-template-literal-types--string-manipulation-at-type-level)
@@ -33,6 +36,7 @@
 18. [Declaration Files & the `declare` Keyword](#18-declaration-files--the-declare-keyword)
 
 **Part V — TypeScript in React Native**
+
 19. [React + TypeScript Fundamentals](#19-react--typescript-fundamentals)
 20. [React Native Components — Typed from Scratch](#20-react-native-components--typed-from-scratch)
 21. [Hooks — Every Hook Typed](#21-hooks--every-hook-typed)
